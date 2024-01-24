@@ -88,6 +88,7 @@ console.log(manejadorProductos.getProducts());
 manejadorProductos.addProduct(producto3)
 console.table(manejadorProductos.getProducts())
 manejadorProductos.addProduct(producto3)
+
 let myIdProducto = manejadorProductos.getProducts()[0].id;
 console.log(manejadorProductos.getProductById(myIdProducto))
 manejadorProductos.getProductById("asd8asd2")
