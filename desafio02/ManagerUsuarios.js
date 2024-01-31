@@ -37,3 +37,5 @@ class ManagerUsuarios {
         }
     }
 }
+
+export default ManagerUsuarios;

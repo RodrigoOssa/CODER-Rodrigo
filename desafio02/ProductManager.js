@@ -35,8 +35,9 @@ class ProductManager {
 
     #modeloObj = ['title', 'description', 'price', 'thumbnail', 'code', 'stock'];
 
-    constructor() {
-        this.products = []
+    constructor(path) {
+        this.products = [];
+        this.path = path;
     }
 
     addProduct(producto) {
@@ -80,6 +81,23 @@ class ProductManager {
             console.log("Not Found")
         }
     }
+
+    updateProduct(id, dato) {
+        const productoIndex = this.products.findIndex(item => item.id === id);
+        for (let item in dato) {
+            if (Object.keys(this.products[productoIndex]).includes(item)) {
+                this.products[productoIndex][item] = dato[item];
+            }
+        }
+        console.log("Campos actualizados")
+        console.table(this.products[productoIndex])
+    }
+
+    deleteProduct(id) {
+        const productoIndex = this.products.findIndex(item => item.id === id);
+        this.products.splice(productoIndex, 1)
+        console.log("Producto eliminado");
+    }
 }
 
 
@@ -88,7 +106,14 @@ console.log(manejadorProductos.getProducts());
 manejadorProductos.addProduct(producto3)
 console.table(manejadorProductos.getProducts())
 manejadorProductos.addProduct(producto3)
+manejadorProductos.addProduct(producto4)
 
 let myIdProducto = manejadorProductos.getProducts()[0].id;
 console.log(manejadorProductos.getProductById(myIdProducto))
 manejadorProductos.getProductById("asd8asd2")
+
+//Entrega nro 2. Clase 4
+manejadorProductos.updateProduct(myIdProducto, { title: "Mouse", stock: 34 })
+console.table(manejadorProductos.getProducts())
+manejadorProductos.deleteProduct(myIdProducto);
+console.table(manejadorProductos.getProducts())
