@@ -1,0 +1,46 @@
+[
+    {
+        "title": "Pendrive",
+        "description": "Esto es una nueva descripcion",
+        "code": "2das",
+        "price": "1422",
+        "status": "true",
+        "stock": "24",
+        "category": "Categoria",
+        "thumbnails": [],
+        "id": "86bd4fb701a6f352"
+    },
+    {
+        "title": "Monitor",
+        "description": "lalala",
+        "code": "2t3ws",
+        "price": "1422",
+        "status": "true",
+        "stock": "82",
+        "category": "Comida de perro",
+        "thumbnails": [],
+        "id": "81fb6b6ff8a89ff8"
+    },
+    {
+        "title": "Algo",
+        "description": "lalala",
+        "code": "d1d12",
+        "price": "1422",
+        "status": "true",
+        "stock": "12",
+        "category": "Categoria",
+        "thumbnails": [],
+        "id": "3283c7369019b729"
+    },
+    {
+        "title": "Mesa",
+        "description": "Mesa para mesar",
+        "code": "d1d12",
+        "price": "1422",
+        "status": "true",
+        "stock": "90",
+        "category": "Mesas",
+        "thumbnails": [],
+        "id": "3283cae690192729"
+    }
+]
