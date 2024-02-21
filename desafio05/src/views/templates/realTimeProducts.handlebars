@@ -1,13 +1,6 @@
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/index.js"></script>
 <h2>Lista de productos pero realtime</h2>
 
-{{#each productos}}
-<div>
-    <h4>Nombre: {{this.title}}</h4>
-    <p>{{this.description}}</p>
-    <p>Precio: <strong>{{this.price}}</strong></p>
-    <p>stock: <strong>{{this.stock}}</strong></p>
-</div>
-</br>
-{{/each}}
+<div id="productos"></div>
+
+<script src="/js/index.js"></script>

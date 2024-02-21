@@ -18,8 +18,7 @@ routes.get('/realtimeproducts', async (req, res) => {
 
 routes.post('/realtimeproducts', async (req, res) => {
     let newProduct = req.body;
-    productos.addThings(newProduct)
-    true ?
+    productos.addThings(newProduct) ?
         socketServer.emit('nuevoProducto', await productos.getThings()) :
         null
 

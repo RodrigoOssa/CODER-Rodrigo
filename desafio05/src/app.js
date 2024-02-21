@@ -20,11 +20,15 @@ app.set('views', __dirname + '/views');
 
 app.use('/', routes);
 
-socketServer.on('connection', socket => {
+socketServer.on('connection', async socket => {
+    let products = await productos.getThings()
     console.log("Nuevo cliente conectado");
 
-    socket.on('nuevoUsuario', data => {
-        console.log(data)
+    socketServer.emit('listaProductos', products)
+
+    socket.on('nuevoProducto', (dato) => {
+        console.log(dato)
+        socketServer.emit('listaProductos', dato)
     })
 })
 
