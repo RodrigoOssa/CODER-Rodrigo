@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+
+<body>
+    <h2>Mensaje desde layouts</h2>
+    {{#each userData}}
+    <div>
+        <p>Nombre: <strong>{{this.nombre}}</strong></p>
+        <p>Apellido: <strong>{{this.apellido}}</strong></p>
+        <p>Correo: <strong>{{this.correo}}</strong></p>
+        <p>Edad: <strong>{{this.edad}}</strong></p>
+        <p>Teléfono: <strong>{{this.telefono}}</strong></p>
+    </div>
+    {{/each}}
+    <p>Esto no hace nada</p>
+</body>
+
+</html>
