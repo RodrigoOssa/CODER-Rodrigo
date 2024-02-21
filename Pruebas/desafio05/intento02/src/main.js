@@ -13,9 +13,9 @@ server.engine('handlebars', engine());
 server.set('view engine', 'handlebars');
 server.set('views', __dirname + '/views');
 
-server.use(router);
+server.use('/', router);
 
-server.get('/usuarios', (req, res) => {
+server.get('/main', (req, res) => {
     res.render('templates/usuario', { userData: userData })
     console.log(__dirname)
 })
