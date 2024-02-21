@@ -25,5 +25,17 @@ routes.post('/realtimeproducts', async (req, res) => {
     res.status(200).send({ status: "OK" })
 })
 
+routes.delete('/realtimeproducts/:pid', async (req, res) => {
+    const pid = req.params.pid;
+    console.log(pid)
+    productos.deleteThings(pid) ?
+        socketServer.emit('deleteProducto', await productos.getThings()) :
+        null
+
+    res.status(200).send({ status: "OK" })
+})
+
+
+
 
 export default routes;

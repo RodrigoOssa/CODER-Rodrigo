@@ -30,6 +30,11 @@ socketServer.on('connection', async socket => {
         console.log(dato)
         socketServer.emit('listaProductos', dato)
     })
+
+    socket.on('deleteProducto', (dato) => {
+        console.log("Producto eliminado")
+        socketServer.emit('listaProductos', dato)
+    })
 })
 
 export { productos, socketServer };
