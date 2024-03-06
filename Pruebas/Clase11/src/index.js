@@ -19,3 +19,18 @@ app.set("view engine", "handlebars");
 app.use(express.static(__dirname + "/pubic"));
 
 app.use("/chat", viewsRouter);
+
+let messages = [];
+io.on('connection', socket => {
+    console.log("Nuevo cliente conectado");
+    io.emit('messageLog', messages)
+    socket.on('message', data => {
+        messages.push(data);
+
+        io.emit('messageLog', messages)
+    })
+    socket.on('newConnection', data => {
+        console.log(data)
+        socket.broadcast.emit('welcome', data)
+    })
+})
