@@ -1,0 +1,8 @@
+class ChatManager {
+
+    constructor() {
+
+    }
+
+
+}
