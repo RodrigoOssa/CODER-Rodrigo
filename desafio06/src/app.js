@@ -4,6 +4,11 @@ import { Server } from "socket.io";
 import __dirname from './path.js';
 import routes from "./routes/views.routes.js";
 import ThingsManager from "./config/ThingsManager.js";
+import mongoose from "mongoose";
+
+const credentials = {
+    pass: "w2DcoDLqilXbVgTt"
+}
 
 const productos = new ThingsManager(__dirname + "/data/products.json");
 const app = express();
@@ -19,6 +24,8 @@ app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
 
 app.use('/', routes);
+
+mongoose.connect(`mongodb+srv://rodrigoo2012r:${credentials.pass}@cluster0.htjkptv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`)
 
 socketServer.on('connection', async socket => {
     let products = await productos.getThings()

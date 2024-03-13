@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { productos, socketServer } from "../app.js";
+import { userModel } from "../models/user.model.js";
 const routes = Router();
 
 routes.get('/', (req, res) => {
@@ -35,7 +36,15 @@ routes.delete('/realtimeproducts/:pid', async (req, res) => {
     res.status(200).send({ status: "OK" })
 })
 
-
+routes.post('/db', async (req, res) => {
+    let { name, surename, email } = req.body;
+    let result = await userModel.create({
+        name,
+        surename,
+        email
+    })
+    res.send({ status: "success", payload: result })
+})
 
 
 export default routes;
