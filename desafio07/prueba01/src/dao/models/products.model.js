@@ -4,16 +4,38 @@ const productCollections = "products" //Así es como se llama la colección en l
 
 const productSchema = new mongoose.Schema({
     //Acá van todas las propiedades que queremos que tenga el usuario en nuestr DB.
-    id: String,
-    title: String,
-    description: String,
-    price: Number,
-    thumbnail: Array,
+    id: {
+        type: String,
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
     code: {
         type: String,
-        unique: true
+        unique: true,
+        required: true
     },
-    stock: Number
+    price: Number,
+    status: {
+        type: Boolean,
+        default: true,
+        required: true
+    },
+    stock: {
+        type: Number,
+        required: true
+    },
+    category: {
+        type: String,
+        required: true
+    },
+    thumbnail: Array
 })
 
 export const productModel = mongoose.model(productCollections, productSchema);

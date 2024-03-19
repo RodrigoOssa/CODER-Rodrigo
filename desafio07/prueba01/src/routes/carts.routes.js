@@ -1,57 +1,56 @@
 import { Router } from "express";
+import { cartModel } from "../dao/models/carts.model.js";
 import { productModel } from "../dao/models/products.model.js";
 import { getId } from "../utils/idGenerator.js";
-const productRoutes = Router();
+const cartRoutes = Router();
 
-productRoutes.get('/', async (req, res) => {
+cartRoutes.get('/', async (req, res) => {
     const { limit } = req.query || 100;
     try {
-        let products = await productModel.find().limit(limit);
+        let products = await cartModel.find().limit(limit);
         res.send({ result: "Success, payload:products", products: products })
     } catch (error) {
         console.log("No se pudo obtener los usuarios con mongoose: " + error)
     }
 })
-productRoutes.get('/:pid', async (req, res) => {
-    const pid = req.params.pid;
-    console.log("Pid", pid)
+cartRoutes.get('/:cid', async (req, res) => {
+    const cid = req.params.cid;
+    let products = [];
     try {
-        let products = await productModel.find({ id: pid });
-        res.send({ result: "Success, payload:products", products: products })
+        let cart = await cartModel.find({ id: cid })
+            .then(data => data[0].products)
+        products = await productModel.find({ id: cart })
+
+        console.log(cart)
+        console.log(products)
+        res.send({ result: "Completado lista de productos", products: products })
     } catch (error) {
-        console.log("No se pudo obtener los usuarios con mongoose: " + error)
+        console.log("No se pudo obtener los usuarios con mongoose: " + error);
+        res.send({ error: error, msg: "No se pudo traer la lista de productos" })
     }
 })
 
-productRoutes.post('/', async (req, res) => {
-    const { title, description, code, price, status, stock, category, thumbnail } = req.body;
-    console.log(req.body)   //Usar esto para aceptar el cuerpo de la peticion
-    console.log(req.query) //Usar esto si le mandan parametros
-    const newProduct = {
-        id: getId(),
-        title: title,
-        description: description,
-        code: code,
-        price: price,
-        status: status,
-        stock: stock,
-        category: category,
-        thumbnail: thumbnail
-    }
+cartRoutes.post('/', async (req, res) => {
+    const { products } = req.body;
+    console.log(products)
     try {
-        let result = await productModel.create(newProduct)
-        res.send({ result: result, msg: "Carga exitosa", prodcts: newProduct })
+        let result = await cartModel.create({
+            id: getId(),
+            products: products
+        })
+        res.send({ result: result, msg: "Carga exitosa" })
     } catch (error) {
-        console.log("No se pudo obtener los usuarios con mongoose: " + error)
+        console.log("No se pudo crear el carrito: " + error)
+        res.send({ error: "ERROR", msg: "No se pudo cargar el carrito" })
     }
 })
-productRoutes.put('/:pid', async (req, res) => {
+cartRoutes.put('/:pid', async (req, res) => {
     const newProduct = req.body;
     const pid = req.params.pid;
     newProduct.id = pid;
     try {
         if (newProduct.title || newProduct.description || newProduct.price || newProduct.thumbnail || newProduct.code || newProduct.stock) {
-            let result = await productModel.updateOne({ id: pid }, newProduct)
+            let result = await cartModel.updateOne({ id: pid }, newProduct)
             res.send({ result: result, msg: "Carga exitosa", prodcts: newProduct })
         } else {
             res.send({ err: "Error", msg: "Hubieron campos vacíos." })
@@ -61,10 +60,10 @@ productRoutes.put('/:pid', async (req, res) => {
         res.send({ err: error, msg: "No se pudo actualizar el producto" })
     }
 })
-productRoutes.delete('/:pid', async (req, res) => {
+cartRoutes.delete('/:pid', async (req, res) => {
     const pid = req.params.pid;
     try {
-        let result = await productModel.deleteOne({ id: pid })
+        let result = await cartModel.deleteOne({ id: pid })
         res.send({ result: result, msg: "Eliminacion de producto exitosa" })
     } catch (error) {
         console.log("No se pudo eliminar el datos: " + error)
@@ -72,12 +71,12 @@ productRoutes.delete('/:pid', async (req, res) => {
     }
 })
 
-/* productRoutes.get('/realtimeproducts', async (req, res) => {
+/* cartRoutes.get('/realtimeproducts', async (req, res) => {
     let products = await productos.getThings();
     res.render('templates/realTimeProducts', { productos: products });
 })
 
-productRoutes.post('/realtimeproducts', async (req, res) => {
+cartRoutes.post('/realtimeproducts', async (req, res) => {
     let newProduct = req.body;
     productos.addThings(newProduct) ?
         socketServer.emit('nuevoProducto', await productos.getThings()) :
@@ -86,7 +85,7 @@ productRoutes.post('/realtimeproducts', async (req, res) => {
     res.status(200).send({ status: "OK" })
 })
 
-productRoutes.delete('/realtimeproducts/:pid', async (req, res) => {
+cartRoutes.delete('/realtimeproducts/:pid', async (req, res) => {
     const pid = req.params.pid;
     console.log(pid)
     productos.deleteThings(pid) ?
@@ -96,4 +95,4 @@ productRoutes.delete('/realtimeproducts/:pid', async (req, res) => {
     res.status(200).send({ status: "OK" })
 }) */
 
-export default productRoutes;
+export default cartRoutes;
