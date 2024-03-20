@@ -24,7 +24,8 @@ productRoutes.get('/:pid', async (req, res) => {
 })
 
 productRoutes.post('/', async (req, res) => {
-    const { title, description, code, price, status, stock, category, thumbnail } = req.body;
+    console.log("post", req.body);
+    const { title, description, code, price, status, stock, category, thumbnails } = req.body;
     console.log(req.body)   //Usar esto para aceptar el cuerpo de la peticion
     console.log(req.query) //Usar esto si le mandan parametros
     const newProduct = {
@@ -36,13 +37,14 @@ productRoutes.post('/', async (req, res) => {
         status: status,
         stock: stock,
         category: category,
-        thumbnail: thumbnail
+        thumbnails: thumbnails
     }
     try {
         let result = await productModel.create(newProduct)
-        res.send({ result: result, msg: "Carga exitosa", prodcts: newProduct })
+        res.send({ result: result, msg: "Carga exitosa", prodcts: newProduct });
     } catch (error) {
-        console.log("No se pudo obtener los usuarios con mongoose: " + error)
+        console.log("No se pudo cargar el producto: " + error);
+        res.send({ error: error, msg: "No se pudo cargar el producto" });
     }
 })
 productRoutes.put('/:pid', async (req, res) => {

@@ -10,7 +10,7 @@ cartRoutes.get('/', async (req, res) => {
         let products = await cartModel.find().limit(limit);
         res.send({ result: "Success, payload:products", products: products })
     } catch (error) {
-        console.log("No se pudo obtener los usuarios con mongoose: " + error)
+        console.log("No se pudo obtener el cart: " + error)
     }
 })
 cartRoutes.get('/:cid', async (req, res) => {
@@ -18,14 +18,14 @@ cartRoutes.get('/:cid', async (req, res) => {
     let products = [];
     try {
         let cart = await cartModel.find({ id: cid })
-            .then(data => data[0].products)
+            .then(data => data[0].products.map(item => item.id))
         products = await productModel.find({ id: cart })
 
         console.log(cart)
         console.log(products)
         res.send({ result: "Completado lista de productos", products: products })
     } catch (error) {
-        console.log("No se pudo obtener los usuarios con mongoose: " + error);
+        console.log("No se pudo obtener el cart: " + error);
         res.send({ error: error, msg: "No se pudo traer la lista de productos" })
     }
 })
@@ -44,14 +44,30 @@ cartRoutes.post('/', async (req, res) => {
         res.send({ error: "ERROR", msg: "No se pudo cargar el carrito" })
     }
 })
-cartRoutes.put('/:pid', async (req, res) => {
-    const newProduct = req.body;
+cartRoutes.post('/:cid/products/:pid', async (req, res) => {
     const pid = req.params.pid;
-    newProduct.id = pid;
+    const cid = req.params.cid;
+    let newCart = (await cartModel.find({ id: cid })).map(item => item);
+    newCart[0].products.some(item => item.id === pid) ?
+        newCart[0].products.find(item => item.id === pid).qty += 1 :
+        newCart[0].products.push({ id: pid, qty: 1 })
+    console.log(newCart);
     try {
-        if (newProduct.title || newProduct.description || newProduct.price || newProduct.thumbnail || newProduct.code || newProduct.stock) {
-            let result = await cartModel.updateOne({ id: pid }, newProduct)
-            res.send({ result: result, msg: "Carga exitosa", prodcts: newProduct })
+        let result = await cartModel.updateOne({ id: cid }, { products: newCart[0].products })
+        res.send({ result: result, msg: "Carga exitosa", cart: newCart })
+    } catch (error) {
+        console.log("No se pudo actualizar los datos: " + error)
+        res.send({ err: error, msg: "No se pudo actualizar el producto" })
+    }
+})
+cartRoutes.put('/:cid', async (req, res) => {
+    const newCart = req.body;
+    const cid = req.params.cid;
+    newCart.id = cid;
+    try {
+        if (newCart.products) {
+            let result = await cartModel.updateOne({ id: cid }, newCart)
+            res.send({ result: result, msg: "Carga exitosa", prodcts: newCart })
         } else {
             res.send({ err: "Error", msg: "Hubieron campos vacíos." })
         }
