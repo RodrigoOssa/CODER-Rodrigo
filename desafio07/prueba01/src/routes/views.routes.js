@@ -1,42 +1,45 @@
 import { Router } from "express";
 import { messagesModel } from "../dao/models/messages.model.js";
 import { productModel } from "../dao/models/products.model.js";
+import { socketServer } from "../app.js";
 const viewsRoute = Router();
 
 viewsRoute.get('/', (req, res) => {
     res.render('layouts/main')
 })
 
-viewsRoute.get('/home', async (req, res) => {
+/* viewsRoute.get('/home', async (req, res) => {
     let products = await productModel.find();
     console.log(products);
     res.render('templates/home', { productos: products })
-})
+}) */
 
 
-/* routes.get('/realtimeproducts', async (req, res) => {
-    let products = await productos.getThings();
+viewsRoute.get('/realtimeproducts', async (req, res) => {
+    let products = await productModel.find()
+        .then(data => socketServer.emit('listaProductos', data))
+
     res.render('templates/realTimeProducts', { productos: products });
 })
 
-routes.post('/realtimeproducts', async (req, res) => {
+viewsRoute.post('/realtimeproducts', async (req, res) => {
     let newProduct = req.body;
     productos.addThings(newProduct) ?
-        socketServer.emit('nuevoProducto', await productos.getThings()) :
+        socketServer.emit('nuevoProducto', await productModel.find()) :
         null
 
     res.status(200).send({ status: "OK" })
 })
 
-routes.delete('/realtimeproducts/:pid', async (req, res) => {
+viewsRoute.delete('/realtimeproducts/:pid', async (req, res) => {
     const pid = req.params.pid;
     console.log(pid)
     productos.deleteThings(pid) ?
-        socketServer.emit('deleteProducto', await productos.getThings()) :
+        socketServer.emit('deleteProducto', await productModel.find()) :
         null
 
     res.status(200).send({ status: "OK" })
-}) */
+})
 
 viewsRoute.post('/db', async (req, res) => {
     let datos = req.body
