@@ -2,9 +2,7 @@ const socket = io();
 const mostrarProductos = document.getElementById('productos')
 console.log("Inicio componente")
 
-console.log(productos);
 socket.on('listaProductos', (data) => {
-    console.log(data)
     mostrarProductos.innerHTML = "";
     data.forEach(element => {
         mostrarProductos.innerHTML += `<h2>${element.title}</h2>`;

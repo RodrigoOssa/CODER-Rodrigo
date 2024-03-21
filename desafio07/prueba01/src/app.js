@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import viewsRoute from "./routes/views.routes.js";
 import productRoutes from "./routes/products.routes.js";
 import cartRoutes from "./routes/carts.routes.js";
+/* import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access"; */
 
 const credentials = {
     pass: "dzODkx9YPceycYt7"

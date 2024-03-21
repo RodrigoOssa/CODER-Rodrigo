@@ -8,18 +8,21 @@ viewsRoute.get('/', (req, res) => {
     res.render('layouts/main')
 })
 
-/* viewsRoute.get('/home', async (req, res) => {
+viewsRoute.get('/home', async (req, res) => {
+    console.log("get /home");
     let products = await productModel.find();
-    console.log(products);
     res.render('templates/home', { productos: products })
-}) */
+})
 
 
 viewsRoute.get('/realtimeproducts', async (req, res) => {
-    let products = await productModel.find()
-        .then(data => socketServer.emit('listaProductos', data))
-
-    res.render('templates/realTimeProducts', { productos: products });
+    console.log("Llamada a realtime")
+    const newProducts = [1, 2, 2, 34, 3, 4, 4];
+    /* let products = await (await productModel.find()).map(item => {
+        newProducts.push(item.title)
+    }) */
+    socketServer.emit('listaProductos', newProducts)
+    res.render('templates/realTimeProducts'/* , { productos: newProducts } */);
 })
 
 viewsRoute.post('/realtimeproducts', async (req, res) => {
