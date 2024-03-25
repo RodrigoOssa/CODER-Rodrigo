@@ -3,15 +3,53 @@ import { productModel } from "../dao/models/products.model.js";
 import { getId } from "../utils/idGenerator.js";
 const productRoutes = Router();
 
+function resModel(status, payload, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage, prevLink, nextLink) {
+    this.status = status;
+    this.payload = payload;
+    this.totalPages = totalPages;
+    this.prevPage = prevPage;
+    this.nextPage = nextPage;
+    this.page = page;
+    this.hasPrevPage = hasPrevPage;
+    this.hasNextPage = hasNextPage;
+    this.prevLink = prevLink;
+    this.nextLink = nextLink
+}
+
 productRoutes.get('/', async (req, res) => {
-    const { limit } = req.query || 100;
+    let { limit, page, query, sort } = req.query;
+    limit = limit || 100;
+    page = page || 1;
+    query = query || {};
+    sort = sort || false;
     try {
-        let products = await productModel.find().limit(limit);
-        res.send({ result: "Success, payload:products", products: products })
+        const totalProducts = (await productModel.find()).length;
+        console.log(totalProducts)
+        let products;
+        if (sort === 1 || sort === -1) {
+            products = await productModel.find(query).limit(limit).sort({ price: -1 });
+        } else {
+            products = await productModel.find(query).limit(limit);
+        }
+
+        res.send(new resModel(
+            "sucess",
+            products,
+            (Math.floor(totalProducts / limit) + 1),
+            ((page - 1) ? page - 1 : null),
+            (page + 1),
+            (page),
+            ((page === 1) ? false : true),
+            ((totalProducts > limit * page) ? true : false),
+            null,
+            null
+        ))
     } catch (error) {
-        console.log("No se pudo obtener los usuarios con mongoose: " + error)
+        console.log("No se pudo obtener los usuarios con mongoose: " + error);
+        res.send({ msg: "No se pudo obtener los usuarios con mongoose:", err: error });
     }
 })
+
 productRoutes.get('/:pid', async (req, res) => {
     const pid = req.params.pid;
     console.log("Pid", pid)
