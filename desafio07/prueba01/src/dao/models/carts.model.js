@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import { Schema } from "mongoose";
 const cartCollections = "carts"
 
 const cartSchema = new mongoose.Schema({
@@ -8,10 +8,7 @@ const cartSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    products: {
-        type: Array,
-        required: true
-    }
+    products: [{ type: Schema.Types.ObjectId, ref: 'products' }]
 })
 
 export const cartModel = mongoose.model(cartCollections, cartSchema);
