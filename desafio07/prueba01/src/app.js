@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import viewsRoute from "./routes/views.routes.js";
 import productRoutes from "./routes/products.routes.js";
 import cartRoutes from "./routes/carts.routes.js";
+import { productModel } from "./dao/models/products.model.js";
 /* import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access"; */
 
 const credentials = {
@@ -32,5 +33,12 @@ mongoose.connect(`mongodb+srv://rodrigoo2012r:${credentials.pass}@ecommerce.nkxj
     .then(() => console.log("OK"))
     .catch(err => console.log(err))
 
+socketServer.on('connection', async socket => {
+    console.log("Nuevo cliente conectado");
+
+    socket.on('getProducts', async () => {
+        socket.emit('listaProductos', await productModel.find().lean())
+    })
+})
 
 export { socketServer };

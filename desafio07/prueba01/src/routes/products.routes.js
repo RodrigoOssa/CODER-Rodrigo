@@ -24,7 +24,6 @@ productRoutes.get('/', async (req, res) => {
     sort = sort || false;
     try {
         const totalProducts = (await productModel.find()).length;
-        console.log(totalProducts)
         let products;
         if (sort === 1 || sort === -1) {
             products = await productModel.find(query).limit(limit).sort({ price: -1 });
@@ -45,8 +44,8 @@ productRoutes.get('/', async (req, res) => {
             null
         ))
     } catch (error) {
-        console.log("No se pudo obtener los usuarios con mongoose: " + error);
-        res.send({ msg: "No se pudo obtener los usuarios con mongoose:", err: error });
+        console.log("No se pudo obtener los products con mongoose: " + error);
+        res.send({ msg: "No se pudo obtener los products con mongoose:", err: error });
     }
 })
 
@@ -75,7 +74,7 @@ productRoutes.post('/', async (req, res) => {
         status: status,
         stock: stock,
         category: category,
-        thumbnails: thumbnails
+        thumbnails: thumbnails || []
     }
     try {
         let result = await productModel.create(newProduct)
@@ -103,8 +102,10 @@ productRoutes.put('/:pid', async (req, res) => {
 })
 productRoutes.delete('/:pid', async (req, res) => {
     const pid = req.params.pid;
+    console.log(pid)
     try {
-        let result = await productModel.deleteOne({ id: pid })
+        let result = await productModel.findByIdAndDelete(pid)
+        console.log(result)
         res.send({ result: result, msg: "Eliminacion de producto exitosa" })
     } catch (error) {
         console.log("No se pudo eliminar el datos: " + error)
@@ -112,8 +113,8 @@ productRoutes.delete('/:pid', async (req, res) => {
     }
 })
 
-/* productRoutes.get('/realtimeproducts', async (req, res) => {
-    let products = await productos.getThings();
+productRoutes.get('/realtimeproducts', async (req, res) => {
+    let products = await productos.getThings().lean();
     res.render('templates/realTimeProducts', { productos: products });
 })
 
@@ -134,6 +135,6 @@ productRoutes.delete('/realtimeproducts/:pid', async (req, res) => {
         null
 
     res.status(200).send({ status: "OK" })
-}) */
+})
 
 export default productRoutes;

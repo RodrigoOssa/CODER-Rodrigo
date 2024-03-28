@@ -1,12 +1,81 @@
-<div>
-    <h2>Productos:</h2>
-</div>
-{{#each productos}}
-<div>
-    <h4>Nombre: {{this.title}}</h4>
-    <p>{{this.description}}</p>
-    <p>Precio: <strong>{{this.price}}</strong></p>
-    <p>stock: <strong>{{this.stock}}</strong></p>
-</div>
-</br>
-{{/each}}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <h2>Productos:</h2>
+        </div>
+        <div class="body">
+            {{#each productos}}
+            <div class="items">
+                <h4>{{this.title}}</h4>
+                <p>{{this.description}}</p>
+                <p>Precio: <strong>{{this.price}}</strong></p>
+                <p>stock: <strong>{{this.stock}}</strong></p>
+                <p>Estado: <strong>{{this.status}}</strong></p>
+                <p>Categoria: <strong>{{this.category}}</strong></p>
+                <button onclick="deleteProduct(`{{this._id}}`)">Eliminar Producto </button>
+            </div>
+            {{/each}}
+        </div>
+        </br>
+        <div class=" formContainer">
+            <h1>Formulario de Producto</h1>
+            <form class="formContent" id="productForm" action="http://localhost:8080/api/products/" method="POST">
+
+                <label for="title">Título:</label><br>
+                <input type="text" id="title" name="title" required><br>
+
+                <label for="description">Descripción:</label><br>
+                <textarea id="description" name="description" required></textarea><br>
+
+                <label for="code">Código:</label><br>
+                <input type="text" id="code" name="code" required><br>
+
+                <label for="price">Precio:</label><br>
+                <input type="number" id="price" name="price" required><br>
+
+                <label for="status">Estado:</label><br>
+                <input type="checkbox" id="status" name="status" value="true">
+                <label for="status">Disponible</label><br>
+
+                <label for="stock">Stock:</label><br>
+                <input type="number" id="stock" name="stock" required><br>
+
+                <label for="category">Categoría:</label><br>
+                <input type="text" id="category" name="category" required><br>
+
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        function deleteProduct(id) {
+            console.log("Eliminando producto")
+            fetch(`http://localhost:8080/api/products/${id}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la solicitud');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Producto eliminado:', data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>

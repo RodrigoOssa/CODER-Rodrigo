@@ -2,6 +2,7 @@ import { Router } from "express";
 import { messagesModel } from "../dao/models/messages.model.js";
 import { productModel } from "../dao/models/products.model.js";
 import { socketServer } from "../app.js";
+import productRoutes from "./products.routes.js";
 const viewsRoute = Router();
 
 viewsRoute.get('/', (req, res) => {
@@ -9,23 +10,26 @@ viewsRoute.get('/', (req, res) => {
 })
 
 viewsRoute.get('/home', async (req, res) => {
-    console.log("get /home");
-    let products = await productModel.find();
-    res.render('templates/home', { productos: products })
+    try {
+        let products = await productModel.find().lean();
+        res.render('templates/home', { productos: products })
+    } catch (err) {
+        res.render('templates/home', { productos: [] })
+    }
 })
 
 
 viewsRoute.get('/realtimeproducts', async (req, res) => {
     console.log("Llamada a realtime")
-    const newProducts = [1, 2, 2, 34, 3, 4, 4];
-    /* let products = await (await productModel.find()).map(item => {
-        newProducts.push(item.title)
-    }) */
-    socketServer.emit('listaProductos', newProducts)
-    res.render('templates/realTimeProducts'/* , { productos: newProducts } */);
+    try {
+        res.render('templates/realTimeProducts', []);
+    } catch (err) {
+
+    }
 })
 
 viewsRoute.post('/realtimeproducts', async (req, res) => {
+    console.log("TEST")
     let newProduct = req.body;
     productos.addThings(newProduct) ?
         socketServer.emit('nuevoProducto', await productModel.find()) :
