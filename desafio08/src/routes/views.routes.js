@@ -70,5 +70,26 @@ viewsRoute.get('/db', async (req, res) => {
     }
 })
 
+viewsRoute.get('/root/:name', (req, res) => {
+    const user = req.params.name;
+    if (!req.session.counter) {
+        console.log("me ejecute")
+        req.session.counter = [];
+    }
+    const newUser = req.session.counter.some(item => item.name === user);
+    if (!newUser) {
+        req.session.counter.push({ name: user, count: 1 })
+        return res.send(`Bienvenido ${user}`)
+    } else {
+        const newList = req.session.counter.map(item => {
+            if (item.name === user) {
+                item.count++
+            }
+            return item
+        })
+        req.session.counter = newList;
+        res.send(` ${user} ha visitado ${req.session.counter.find(item => item.name === user).count} veces el sitio`)
+    }
+})
 
 export default viewsRoute;

@@ -10,6 +10,9 @@ import { productModel } from "./dao/models/products.model.js";
 /* import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access"; */
 import cookieParser from "cookie-parser";
 import cookieTest from "./routes/cookieTest.routes.js";
+import endpointTest from "./routes/endpointTest.routes.js";
+import session from 'express-session';
+import sessionR from "./routes/sessionR.routes.js";
 
 const credentials = {
     pass: "dzODkx9YPceycYt7"
@@ -19,6 +22,24 @@ const app = express();
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => console.log("Server escuchando puerto " + PORT))
 const socketServer = new Server(httpServer);
+
+/* 
+*   Usamos el middleware para manejo de sesiones
+*/
+
+app.use(session({
+    secret: 'secret',
+    /**
+     *     Resave permite mantener la sesión activa en caso de que la sesión se mantenga inactiva.
+     *     Si se deja en false, la sessión morirá en caso de que exista cierto tiempo de inactividad.  
+     */
+    resave: true,
+    /**
+     *     SaveUninitialized permite guardar cualquier sessión aún cuando el objeto de sesión no tenga nada pro contener.
+     *     Si se deja en false, la sesión no se guardará si el objeto de sesión está vacío al final de la consulta.
+     */
+    saveUninitialized: true
+}))
 
 //Propio de express para mandar y recibir correctamente los datos a través de un JSON.
 app.use(express.json());
@@ -34,8 +55,9 @@ app.set('views', __dirname + '/views');
 app.use('/', viewsRoute);
 app.use('/api/products', productRoutes);
 app.use('/api/carts', cartRoutes);
-app.use('/cookieTest', cookieTest)
-
+app.use('/cookieTest', cookieTest);
+app.use('/endpoint', endpointTest);
+app.use('/sessions', sessionR);
 
 /* 
 * Para agregarle seguridad a las cookies se puede firmar las cookies y detectar si han sido modificadas desde el lado del cliente.
