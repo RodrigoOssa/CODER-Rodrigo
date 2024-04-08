@@ -1,0 +1,68 @@
+[
+    {
+        "title": "Monitor",
+        "description": "lalala",
+        "code": "2t3ws",
+        "price": "1422",
+        "status": "true",
+        "stock": "82",
+        "category": "Comida de perro",
+        "thumbnails": [],
+        "id": "81fb6b6ff8a89ff8"
+    },
+    {
+        "title": "Algo",
+        "description": "lalala",
+        "code": "d1d12",
+        "price": "1422",
+        "status": "true",
+        "stock": "12",
+        "category": "Categoria",
+        "thumbnails": [],
+        "id": "3283c7369019b729"
+    },
+    {
+        "title": "Mesa",
+        "description": "Mesa para mesar",
+        "code": "d1d12",
+        "price": "1422",
+        "status": "true",
+        "stock": "90",
+        "category": "Mesas",
+        "thumbnails": [],
+        "id": "3283cae690192729"
+    },
+    {
+        "title": "Botella",
+        "description": "Botella de agua color verde",
+        "code": "1a1a1",
+        "price": "264",
+        "status": "true",
+        "stock": "100",
+        "category": "Categoria",
+        "thumbnails": [],
+        "id": "9cb66bbb6586800f"
+    },
+    {
+        "title": "Calefactor",
+        "description": "Calefactor que calefacciona",
+        "code": "23af2",
+        "price": "10000",
+        "status": "true",
+        "stock": "20",
+        "category": "Calefaccion",
+        "thumbnails": [],
+        "id": "961e56df81aa53d0"
+    },
+    {
+        "title": "Calefactor",
+        "description": "Calefactor que calefacciona",
+        "code": "23af2",
+        "price": "10000",
+        "status": "true",
+        "stock": "20",
+        "category": "Calefaccion",
+        "thumbnails": [],
+        "id": "8967157ad0ff6d14"
+    }
+]
