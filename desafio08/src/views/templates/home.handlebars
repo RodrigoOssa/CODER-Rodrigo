@@ -24,6 +24,7 @@
             {{/each}}
         </div>
         </br>
+        {{#if isAdmin}}
         <div class=" formContainer">
             <h1>Formulario de Producto</h1>
             <form class="formContent" id="productForm" action="http://localhost:8080/api/products/" method="POST">
@@ -54,6 +55,11 @@
             </form>
         </div>
     </div>
+    {{else}}
+    <div class=" formContainer">
+        <h1>Solo el administrador puede agregar productos</h1>
+    </div>
+    {{/if}}
 
 
     <script>

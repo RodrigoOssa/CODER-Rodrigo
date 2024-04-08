@@ -3,16 +3,44 @@ import { messagesModel } from "../dao/models/messages.model.js";
 import { productModel } from "../dao/models/products.model.js";
 import { socketServer } from "../app.js";
 import productRoutes from "./products.routes.js";
+import { userModel } from "../dao/models/user.model.js";
 const viewsRoute = Router();
 
-viewsRoute.get('/', (req, res) => {
-    res.render('layouts/main')
+const auth = async (req, res, next) => {
+    if (req.session.user_name === "adminCoder" && req.session.password === "adminCod3r123") {
+        return next();
+    }
+    try {
+        const dataUser = await userModel.findOne({ user_name: req.session.user_name });
+        if (dataUser && dataUser.user_name === req.session.user_name && dataUser.password === req.session.password) {
+            return next();
+        } else {
+            res.status(401).redirect('/login');
+        }
+    } catch (err) {
+        return res.status(400).send({ status: "Error", msg: "Error al consultar la base de datos" })
+    }
+}
+
+viewsRoute.get('/', auth, (req, res) => {
+    const userData = {
+        first_name: req.session.first_name,
+        last_name: req.session.last_name,
+        user_name: req.session.user_name,
+        email: req.session.email,
+        age: req.session.age,
+        rol: req.session.rol
+    }
+    res.render('layouts/main', { userData })
 })
 
-viewsRoute.get('/home', async (req, res) => {
+viewsRoute.get('/home', auth, async (req, res) => {
+    let isAdmin = false;
+    if (req.session.rol === "admin") isAdmin = true;
+    console.log(isAdmin)
     try {
         let products = await productModel.find().lean();
-        res.render('templates/home', { productos: products })
+        res.render('templates/home', { productos: products, isAdmin })
     } catch (err) {
         res.render('templates/home', { productos: [] })
     }
@@ -90,6 +118,25 @@ viewsRoute.get('/root/:name', (req, res) => {
         req.session.counter = newList;
         res.send(` ${user} ha visitado ${req.session.counter.find(item => item.name === user).count} veces el sitio`)
     }
+})
+
+viewsRoute.get('/register', (req, res) => {
+    res.status(200).render('templates/register');
+})
+
+viewsRoute.get('/alreadyregister', (req, res) => {
+    res.status(200).render('templates/alreadyregister');
+})
+viewsRoute.get('/accountcreate', (req, res) => {
+    res.status(200).render('templates/accountcreate');
+})
+
+viewsRoute.get('/accountDoestExist', (req, res) => {
+    res.status(200).render('templates/accountDoestExist');
+})
+
+viewsRoute.get('/login', (req, res) => {
+    res.status(200).render('templates/login')
 })
 
 export default viewsRoute;

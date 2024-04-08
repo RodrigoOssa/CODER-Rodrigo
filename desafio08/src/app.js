@@ -7,17 +7,19 @@ import viewsRoute from "./routes/views.routes.js";
 import productRoutes from "./routes/products.routes.js";
 import cartRoutes from "./routes/carts.routes.js";
 import { productModel } from "./dao/models/products.model.js";
-/* import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access"; */
 import cookieParser from "cookie-parser";
 import cookieTest from "./routes/cookieTest.routes.js";
 import endpointTest from "./routes/endpointTest.routes.js";
 import session from 'express-session';
-import sessionR from "./routes/sessionR.routes.js";
+import sessions from "./routes/sessions.routes.js";
+import FileStore from "session-file-store";
+import MongoStore from "connect-mongo";
 
 const credentials = {
     pass: "dzODkx9YPceycYt7"
 }
 
+const fileStorage = FileStore(session);   //Conectamos session con lo que será el FileStore
 const app = express();
 const PORT = 8080;
 const httpServer = app.listen(PORT, () => console.log("Server escuchando puerto " + PORT))
@@ -28,6 +30,15 @@ const socketServer = new Server(httpServer);
 */
 
 app.use(session({
+    /**
+     *  FileStore sirve para guardar las sessiones en el servidor e impedir que se borren ante un eventual reinicio, pudiendo recuperrar el sessionID.
+     */
+    //store: new fileStorage({ path: './sessions', ttl: 100, retries: 0 }),
+    store: MongoStore.create({
+        mongoUrl: `mongodb+srv://rodrigoo2012r:${credentials.pass}@ecommerce.nkxjpdn.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=ecommerce`,
+        mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true }/* ,
+        ttl: 15 */
+    }),
     secret: 'secret',
     /**
      *     Resave permite mantener la sesión activa en caso de que la sesión se mantenga inactiva.
@@ -55,9 +66,9 @@ app.set('views', __dirname + '/views');
 app.use('/', viewsRoute);
 app.use('/api/products', productRoutes);
 app.use('/api/carts', cartRoutes);
+app.use('/api/sessions', sessions);
 app.use('/cookieTest', cookieTest);
 app.use('/endpoint', endpointTest);
-app.use('/sessions', sessionR);
 
 /* 
 * Para agregarle seguridad a las cookies se puede firmar las cookies y detectar si han sido modificadas desde el lado del cliente.

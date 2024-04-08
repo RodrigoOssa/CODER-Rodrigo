@@ -6,12 +6,15 @@ const userSchema = new mongoose.Schema({
     //Acá van todas las propiedades que queremos que tenga el usuario en nuestr DB.
     first_name: String,
     last_name: String,
-    age: Number,
+    user_name: String,
     email: {
         //Si necesitamos por ejemplo especificar que sea unico tenemos que hacerlo como un objeto.
         type: String,
         unique: true
-    }
+    },
+    age: Number,
+    password: String,
+    rol: String
 })
 
 export const userModel = mongoose.model(userCollections, userSchema);
