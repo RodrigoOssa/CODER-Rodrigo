@@ -12,6 +12,6 @@ export const createHash = (pass) => {
  *  compareSync tomará primero el password sin hashear y lo comparará con el password ya hasheado en la base de datos.
  *  Devolverá true o false dependiendo si el password coincide o no.
  */
-export const isValidPassword = (user, pass) => {
-    return bcrypt.compareSync(pass, user.pass);
+export const isValidPassword = (user, password) => {
+    return bcrypt.compareSync(password, user.password);
 };

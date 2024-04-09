@@ -139,4 +139,8 @@ viewsRoute.get('/login', (req, res) => {
     res.status(200).render('templates/login')
 })
 
+viewsRoute.get('/reset-password', (req, res) => {
+    res.status(200).render('templates/resetPassword')
+})
+
 export default viewsRoute;

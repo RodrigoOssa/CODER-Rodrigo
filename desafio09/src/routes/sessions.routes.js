@@ -1,13 +1,14 @@
 import express from "express";
 import { userModel } from "../dao/models/user.model.js";
 import { createHash, isValidPassword } from "../utils/utils.js";
+import passport from "passport";
 
 const sessions = express.Router();
 
 const auth = async (req, res, next) => {
     try {
         const dataUser = await userModel.findOne({ user_name: req.session.user_name });
-        if (dataUser && dataUser.user_name === req.session.user_name && dataUser.password === req.session.password) {
+        if (dataUser && dataUser.user_name === req.session.user_name && isValidPassword(dataUser, req.session.password)) {
             return next();
         } else {
             return res.status(401).send("Error de autorización");
@@ -55,7 +56,7 @@ sessions.post('/login', async (req, res) => {
     }
     //Logueo del super secreto admin
     if (user_name === "adminCoder" && password === "adminCod3r123") {
-        console.log("Credenciales correctas")
+        console.log("Credenciales correctas de admin")
         req.session.first_name = "Coder";
         req.session.last_name = "House";
         req.session.user_name = "adminCoder";
@@ -69,7 +70,7 @@ sessions.post('/login', async (req, res) => {
     try {
         const dataUser = await userModel.findOne({ user_name: user_name });
         if (dataUser && dataUser.user_name === user_name) {
-            if (isValidPassword(dataUser, password)) return res.send("Password incorrecta")
+            if (!isValidPassword(dataUser, password)) return res.send("Password incorrecta")
             req.session.first_name = dataUser.first_name;
             req.session.last_name = dataUser.last_name;
             req.session.user_name = dataUser.user_name;
@@ -86,50 +87,68 @@ sessions.post('/login', async (req, res) => {
     }
 })
 
-sessions.post('/register', async (req, res) => {
-    const { first_name, last_name, user_name, email, age, password } = req.body;
-    if (!first_name || !last_name || !user_name || !email || !age || !password) {
-        return res.status(400).send({ status: "ERROR", error: "Uno de los campos es undefined" })
-    }
-    try {
-        const userInDB = await userModel.findOne({ user_name: user_name });
-        if (!userInDB) {
-            const newUser = await userModel.create({
-                first_name,
-                last_name,
-                user_name,
-                email,
-                age,
-                password: createHash(password),
-                rol: "user"
-            })
-            if (newUser) {
-                console.log({ msg: "usuario agregado", newUser })
-                req.session.first_name = first_name;
-                req.session.last_name = last_name;
-                req.session.user_name = user_name;
-                req.session.email = email;
-                req.session.age = age;
-                req.session.password = createHash(password);
-                req.session.rol = newUser.rol;
-                return res.status(200).redirect('/')
-            } else {
-                console.log({ msg: "Error al cargar usuario", newUser })
-                return res.status(400).send({ status: "ERROR", msg: "Error al crear el usuario", newUser })
-            }
-        } else {
+sessions.post('/register', passport.authenticate('register', { failureRedirect: '/alreadyregister' }), async (req, res) => {
+    res.send({ status: "OK", msg: "Usuario registrado" })
+});
+/* sessions.post('/register', async (req, res) => { 
+const { first_name, last_name, user_name, email, age, password } = req.body;
+if (!first_name || !last_name || !user_name || !email || !age || !password) {
+    return res.status(400).send({ status: "ERROR", error: "Uno de los campos es undefined" })
+}
+try {
+    const userInDB = await userModel.findOne({ user_name: user_name });
+    if (!userInDB) {
+        const newUser = await userModel.create({
+            first_name,
+            last_name,
+            user_name,
+            email,
+            age,
+            password: createHash(password),
+            rol: "user"
+        })
+        if (newUser) {
+            console.log({ msg: "usuario agregado", newUser })
             req.session.first_name = first_name;
             req.session.last_name = last_name;
             req.session.user_name = user_name;
             req.session.email = email;
             req.session.age = age;
             req.session.password = createHash(password);
-            req.session.rol = userInDB.rol;
-            console.log(req.session);
-            return res.status(200).redirect('/alreadyregister')
+            req.session.rol = newUser.rol;
+            return res.status(200).redirect('/')
+        } else {
+            console.log({ msg: "Error al cargar usuario", newUser })
+            return res.status(400).send({ status: "ERROR", msg: "Error al crear el usuario", newUser })
         }
+    } else {
+        /\* req.session.first_name = first_name;
+        req.session.last_name = last_name;
+        req.session.user_name = user_name;
+        req.session.email = email;
+        req.session.age = age;
+        req.session.password = createHash(password);
+        req.session.rol = userInDB.rol; *\/
+        console.log(req.session);
+        return res.status(200).redirect('/alreadyregister')
+    }
+} catch (err) {
+    res.status(400).send({ status: "ERROR", error: err })
+}
+}) */
+
+sessions.post('/reset-password', async (req, res) => {
+    const { user_name, new_password } = req.body;
+    try {
+        const userData = await userModel.findOneAndUpdate(
+            { user_name: user_name },
+            { $set: { password: createHash(new_password) } },
+            { returnOriginal: false }
+        );
+        if (!userData) return res.send({ status: "No se encontró el usuario", userData })
+        return res.status(200).send("Contraseña actualizada con éxito");
     } catch (err) {
-        res.status(400).send({ status: "ERROR", error: err })
+        return res.status(400).send({ status: "ERROR", error: "No se pudo acceder a la DB" })
     }
 })
 

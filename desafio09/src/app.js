@@ -1,19 +1,31 @@
-import express from "express";
-import { engine } from "express-handlebars";
-import { Server } from "socket.io";
-import __dirname from './path.js';
-import mongoose from "mongoose";
+//Modelo de datos de productos
+import { productModel } from "./dao/models/products.model.js";
+//rutas
 import viewsRoute from "./routes/views.routes.js";
 import productRoutes from "./routes/products.routes.js";
 import cartRoutes from "./routes/carts.routes.js";
-import { productModel } from "./dao/models/products.model.js";
-import cookieParser from "cookie-parser";
-import cookieTest from "./routes/cookieTest.routes.js";
 import endpointTest from "./routes/endpointTest.routes.js";
+import cookieTest from "./routes/cookieTest.routes.js";
+import __dirname from './path.js';
+//Importación necesaria para usar servidor de express
+import express from "express";
+//Importación necesaria para usar handlebars
+import { engine } from "express-handlebars";
+//Importación necesaria para usar sockets
+import { Server } from "socket.io";
+//Importación necesaria para poder usar mongoose y conectarse a mongo
+import mongoose from "mongoose";
+//Importación para usar coockies
+import cookieParser from "cookie-parser";
+//Importación necesaria para usar session
 import session from 'express-session';
 import sessions from "./routes/sessions.routes.js";
+//Importación necesaria para guardar la sessión en local ó en mongo
 import FileStore from "session-file-store";
 import MongoStore from "connect-mongo";
+//importaciones necesarias para passport
+import passport from "passport";
+import initPassport from "./config/passport.config.js";
 
 const credentials = {
     pass: "dzODkx9YPceycYt7"
@@ -51,6 +63,10 @@ app.use(session({
      */
     saveUninitialized: true
 }))
+//Midleware de passport, justo despues de la declaración de nuestro middleware de sessions.
+initPassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 //Propio de express para mandar y recibir correctamente los datos a través de un JSON.
 app.use(express.json());
