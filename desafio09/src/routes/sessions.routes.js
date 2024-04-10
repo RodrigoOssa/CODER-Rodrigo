@@ -49,7 +49,24 @@ sessions.post('/logout', (req, res) => {
  *  indicar que se trata de un usuario administrador.
  */
 
-sessions.post('/login', async (req, res) => {
+sessions.post('/login', passport.authenticate(
+    'login',
+    { failureRedirect: '/faillogin' }),
+    async (req, res) => {
+        //console.log(req.user)
+        if (!req.user) {
+            return res.status(400).send({ status: "ERROR", error: "Credenciales inválidas" })
+        }
+        req.session.first_name = req.user.first_name;
+        req.session.last_name = req.user.last_name;
+        req.session.user_name = req.user.user_name;
+        req.session.email = req.user.email;
+        req.session.age = req.user.age;
+        req.session.password = req.user.password;
+        req.session.rol = req.user.rol;
+        res.redirect('/');
+    })
+/* sessions.post('/login', async (req, res) => {
     const { user_name, password } = req.body;
     if (!user_name || !password) {
         return res.status(400).send({ status: "ERROR", error: "Uno o mas campos incompletos" })
@@ -66,7 +83,7 @@ sessions.post('/login', async (req, res) => {
         req.session.rol = "admin";
         return res.status(200).redirect('/');
     }
-
+ 
     try {
         const dataUser = await userModel.findOne({ user_name: user_name });
         if (dataUser && dataUser.user_name === user_name) {
@@ -85,7 +102,7 @@ sessions.post('/login', async (req, res) => {
     } catch (err) {
         return res.status(400).send({ status: "Error", msg: "Error al consultar la base de datos" })
     }
-})
+}) */
 
 sessions.post('/register', passport.authenticate('register', { failureRedirect: '/alreadyregister' }), async (req, res) => {
     res.send({ status: "OK", msg: "Usuario registrado" })
