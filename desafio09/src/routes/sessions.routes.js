@@ -185,4 +185,18 @@ sessions.get('/admin', auth, (req, res) => {
     res.send("Esta es la página que permite ver si sos administrador")
 })
 
+sessions.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
+    if (!req.user) {
+        return res.status(400).send({ status: "ERROR", error: "Credenciales inválidas" })
+    }
+    req.session.first_name = req.user.first_name;
+    req.session.last_name = req.user.last_name;
+    req.session.user_name = req.user.user_name;
+    req.session.email = req.user.email;
+    req.session.age = req.user.age;
+    req.session.password = req.user.password;
+    req.session.rol = req.user.rol;
+    res.redirect('/');
+})
+
 export default sessions;

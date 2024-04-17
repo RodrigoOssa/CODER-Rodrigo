@@ -100,7 +100,7 @@ app.use(cookieParser());
 
 //Conexión con el servidor de mongoDB
 mongoose.connect(`mongodb+srv://rodrigoo2012r:${credentials.pass}@ecommerce.nkxjpdn.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=ecommerce`)
-    .then(() => console.log("OK"))
+    .then(() => console.log("DB Connected"))
     .catch(err => console.log(err))
 
 //Socket.io atento a cuando hayan nuevas conexiones

@@ -4,6 +4,7 @@ import { productModel } from "../dao/models/products.model.js";
 import { socketServer } from "../app.js";
 import productRoutes from "./products.routes.js";
 import { userModel } from "../dao/models/user.model.js";
+import passport from "passport";
 const viewsRoute = Router();
 
 const auth = async (req, res, next) => {
@@ -22,7 +23,7 @@ const auth = async (req, res, next) => {
     }
 }
 
-viewsRoute.get('/', auth, (req, res) => {
+viewsRoute.get('/', auth, (req, res) => { //Volver a poner el auth, lo saco porque si no con github no entra
     const userData = {
         first_name: req.session.first_name,
         last_name: req.session.last_name,
@@ -34,7 +35,7 @@ viewsRoute.get('/', auth, (req, res) => {
     res.render('layouts/main', { userData })
 })
 
-viewsRoute.get('/home', auth, async (req, res) => {
+viewsRoute.get('/home', auth, async (req, res) => {//Volver a poner el auth, lo saco porque si no con github no entra
     let isAdmin = false;
     if (req.session.rol === "admin") isAdmin = true;
     console.log(isAdmin)
@@ -142,5 +143,7 @@ viewsRoute.get('/login', (req, res) => {
 viewsRoute.get('/reset-password', (req, res) => {
     res.status(200).render('templates/resetPassword')
 })
+
+viewsRoute.get('/github', passport.authenticate('github', { scope: ['user:user'] }), async (req, res) => { })
 
 export default viewsRoute;

@@ -8,6 +8,7 @@ import passport from "passport";
 import local from "passport-local";
 import { userModel } from "../dao/models/user.model.js";
 import { createHash, isValidPassword } from "../utils/utils.js";
+import GithubStrategy from "passport-github2";
 
 /**
  *  Passport siempre requerirá un username y password. De no encontrarlos devolverá un error y no podrá seguir con la estrategia.
@@ -25,6 +26,7 @@ const LocalStrategy = local.Strategy;
 const initPassport = () => {
     //Se inicializa la estrategia local
 
+    //Estrategia local
     passport.use('register', new LocalStrategy(
         {
             passReqToCallback: true,
@@ -59,6 +61,36 @@ const initPassport = () => {
             }
         }
     ))
+
+    //Estrategia con github
+    passport.use('github', new GithubStrategy({
+        clientID: "Iv1.595fbeb58d9b651a",
+        clientSecret: "2126b20c3312792daf52fbe07947c27dec275217",
+        callbackURL: "http://localhost:8080/api/sessions/githubcallback"
+    }, async (accessToken, refreshToken, profile, done) => {
+        try {
+            let user = await userModel.findOne({ user_name: profile._json.name })
+            if (!user) {
+                const newUser = await userModel.create({
+                    first_name: profile._json.name,
+                    last_name: profile._json.last_name || null,
+                    user_name: profile._json.login,
+                    email: profile._json.email,
+                    age: 20,
+                    password: createHash("123"),
+                    rol: "user"
+                })
+                done(null, newUser)
+            } else {
+                console.log("El usuario de github ya existia")
+                console.log(user)
+                done(null, user)
+            }
+        } catch (err) {
+            console.log(err)
+            done(err)
+        }
+    }))
 }
 
 //Estrategia de login
