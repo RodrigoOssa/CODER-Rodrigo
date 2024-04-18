@@ -1,6 +1,6 @@
 import express from "express";
 import { userModel } from "../dao/models/user.model.js";
-import { createHash, isValidPassword } from "../utils/utils.js";
+import { createHash, generateToken, isValidPassword } from "../utils/utils.js";
 import passport from "passport";
 
 const sessions = express.Router();
@@ -51,12 +51,13 @@ sessions.post('/logout', (req, res) => {
 
 sessions.post('/login', passport.authenticate(
     'login',
-    { failureRedirect: '/faillogin' }),
+    { failureRedirect: '/login' }),
     async (req, res) => {
-        //console.log(req.user)
+        console.log(req.user)
         if (!req.user) {
             return res.status(400).send({ status: "ERROR", error: "Credenciales inválidas" })
         }
+        const access_token = generateToken(req.user);
         req.session.first_name = req.user.first_name;
         req.session.last_name = req.user.last_name;
         req.session.user_name = req.user.user_name;
@@ -105,7 +106,10 @@ sessions.post('/login', passport.authenticate(
 }) */
 
 sessions.post('/register', passport.authenticate('register', { failureRedirect: '/alreadyregister' }), async (req, res) => {
-    res.send({ status: "OK", msg: "Usuario registrado" })
+    console.log(req.user)
+    /*  const access_token = generateToken(req.user);
+     console.log(access_token); */
+    res.send({ status: "OK", msg: "Usuario registrado", access_token })
 });
 /* sessions.post('/register', async (req, res) => { 
 const { first_name, last_name, user_name, email, age, password } = req.body;

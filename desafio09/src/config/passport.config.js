@@ -7,7 +7,7 @@
 import passport from "passport";
 import local from "passport-local";
 import { userModel } from "../dao/models/user.model.js";
-import { createHash, isValidPassword } from "../utils/utils.js";
+import { createHash, generateToken, isValidPassword } from "../utils/utils.js";
 import GithubStrategy from "passport-github2";
 
 /**
@@ -38,12 +38,14 @@ const initPassport = () => {
 
             try {
                 const userData = await userModel.findOne({ user_name: user_name });
+                console.log(userData)
                 if (userData) {
                     //No encontrar un usuario no significa que sea un error, así que el error lo pasamos como null, pero al usuario como false.
                     //Esto significa que ocurrió un error al buscar el usuario, pero el usuario ya existe y no puede continuar
                     console.log("El usuario ya existe");
                     return done(null, false);
                 }
+                console.log("El usuario fue creado con éxito")
                 const newUser = await userModel.create({
                     first_name,
                     last_name,
@@ -97,16 +99,18 @@ const initPassport = () => {
 passport.use('login', new LocalStrategy(
     { usernameField: 'user_name' },
     async (user_name, password, done) => {
+        console.log({ user_name, password })
         try {
             const user = await userModel.findOne({ user_name: user_name });
-            //console.log({ user_name, password })
             if (!user) {
                 console.log("El usuario no existe");
                 return done(null, false);
             }
             if (!isValidPassword(user, password)) {
+                console.log("El usuario existe pero contraseña incorrecta");
                 return done(null, false);
             }
+
             return done(null, user);
         } catch (err) {
             return done(err);
