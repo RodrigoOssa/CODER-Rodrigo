@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+</head>
+
+<body>
+    <h1>Registro de Usuario</h1>
+    <form action="/api/sessions/register" method="POST">
+        <label for="first_name">Nombre:</label><br>
+        <input type="text" id="first_name" name="first_name" required><br>
+
+        <label for="last_name">Apellido:</label><br>
+        <input type="text" id="last_name" name="last_name" required><br>
+
+        <label for="user_name">Nombre Usuario:</label><br>
+        <input type="text" id="user_name" name="user_name" required><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+
+        <label for="age">Edad:</label><br>
+        <input type="text" id="age" name="age"><br>
+
+        <label for="password">Contraseña:</label><br>
+        <input type="password" id="password" name="password" required><br>
+
+        <button type="submit">Registrarse</button>
+    </form>
+</body>
+
+</html>

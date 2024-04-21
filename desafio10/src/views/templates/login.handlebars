@@ -1,0 +1,30 @@
+<!-- login.handlebars -->
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+</head>
+
+<body>
+    <h1>Iniciar Sesión</h1>
+    <form action="/api/sessions/login" method="POST">
+        <label for="user_name">Nombre de Usuario:</label><br>
+        <input type="text" id="user_name" name="user_name" required><br>
+
+        <label for="password">Contraseña:</label><br>
+        <input type="password" id="password" name="password" required><br>
+
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+    <a href="/register"><button type="submit">Registrarse</button></a>
+    <a href="/reset-password"><button type="submit">Cambiar contraseña</button></a>
+    <div>
+        <a href="/github"><button>Entrar con github</button></a>
+    </div>
+</body>
+
+</html>

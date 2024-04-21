@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Página principal</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+
+<body>
+    <h1>Datos del Usuario</h1>
+    <p>Nombre: {{ userData.first_name }}</p>
+    <p>Apellido: {{ userData.last_name }}</p>
+    <p>Nombre de Usuario: {{ userData.user_name }}</p>
+    <p>Email: {{ userData.email }}</p>
+    <p>Edad: {{ userData.age }}</p>
+    <p>Rol: <strong>{{ userData.rol }}</strong></p>
+    <form action="/api/sessions/logout" method="POST">
+        <button type="submit">Cerrar Sesión</button>
+    </form>
+    <a href="/home"><button type="submit">Ir a productos</button></a>
+</body>
+
+</html>
