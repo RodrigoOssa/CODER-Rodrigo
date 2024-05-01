@@ -13,13 +13,19 @@ cookieTest.get('/setCookie', (req, res) => {
     *   res.cookie("MiCookie", "Este es un ejemplo con un objeto en la cookie", { maxAge: 10000, signed: true })
     * 
     */
+    //Ej cookie
+    res.cookie('nombre', { nombre: "Juan" }, { maxAge: 360000 }).send({ msj: "Envío de cookie nombre" })
 
-
+})
+cookieTest.get('/setCookieSigned', (req, res) => {
+    //envio de una cookie firmada
+    res.cookie('signedCookie', { payload: "Codigo super secreto" }, { maxAge: 360000, httpOnly: true, signed: true }).send({ msj: "Envío de cookie firmada" })
 })
 
 cookieTest.get('/getCookie', async (req, res) => {
+    console.log("leyendo cookies", req.signedCookies)
     //Para leer una cookie seteada en el cliente se utiliza el objeto req
-    res.send(req.cookies)
+    res.send({ signed: req.signedCookies, nosigned: req.cookies })
     //Para leer una cookie en especial se usa el objeto req pero con el nombre de la cookie.
     //res.send(req.cookies.MiCookie)
 

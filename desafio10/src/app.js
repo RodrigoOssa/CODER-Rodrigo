@@ -78,14 +78,6 @@ app.engine('handlebars', engine({ defaultLayout: false }));
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
 
-//Manejador de las rutas
-app.use('/', viewsRoute);
-app.use('/api/products', productRoutes);
-app.use('/api/carts', cartRoutes);
-app.use('/api/sessions', sessions);
-app.use('/cookieTest', cookieTest);
-app.use('/endpoint', endpointTest);
-
 /* 
 * Para agregarle seguridad a las cookies se puede firmar las cookies y detectar si han sido modificadas desde el lado del cliente.
 *
@@ -96,7 +88,16 @@ app.use('/endpoint', endpointTest);
 * Solo hace falta agregar un "secret" al momento de la inicializacion.
  */
 //Uso de cookies
-app.use(cookieParser());
+
+app.use(cookieParser("S3cr3tK3y"));
+
+//Manejador de las rutas
+app.use('/', viewsRoute);
+app.use('/api/products', productRoutes);
+app.use('/api/carts', cartRoutes);
+app.use('/api/sessions', sessions);
+app.use('/cookieTest', cookieTest);
+app.use('/endpoint', endpointTest);
 
 //Conexión con el servidor de mongoDB
 mongoose.connect(`mongodb+srv://rodrigoo2012r:${credentials.pass}@ecommerce.nkxjpdn.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=ecommerce`)

@@ -9,7 +9,8 @@ import local from "passport-local";
 import { userModel } from "../dao/models/user.model.js";
 import { createHash, generateToken, isValidPassword } from "../utils/utils.js";
 import GithubStrategy from "passport-github2";
-
+//Para usar la estrategia de login con JSON web token
+import jwt from 'passport-jwt';
 /**
  *  Passport siempre requerirá un username y password. De no encontrarlos devolverá un error y no podrá seguir con la estrategia.
  *  Se puede cambiar el campo "username" para que tome el campo que se quiera, se puede usar el nombre de usuario o el correo, o lo que se quiera. Se debe modificar {usernameField:"valor"}.
@@ -23,6 +24,17 @@ import GithubStrategy from "passport-github2";
 */
 
 const LocalStrategy = local.Strategy;
+const JWTStrategy = jwt.Strategy;   //Core de la estrategia de jwt
+const ExtractJWT = jwt.ExtractJwt;  //Extractor de jwt. Ya sea de header, cookies, etc.
+
+const cookieExtractor = req => {
+    let token = null;
+    if (req && req.cookies) {
+        token = req.cookies['tokenCookie']
+    }
+    return token;
+}
+
 const initPassport = () => {
     //Se inicializa la estrategia local
 
@@ -91,6 +103,23 @@ const initPassport = () => {
         } catch (err) {
             console.log(err)
             done(err)
+        }
+    }))
+
+    /**
+     * Para poder usar JWT se necesita un estilo de extracción de token que se vaya a usar, el cual puede ser por coockie, header o del body.
+     * Passport no controla las cookies por si solo. Hace uso de una funció personalizada para extraer la cookie, esta función se llamará "cookieExtractor".
+     * Se volverá a utilizar cookieParser. Configurado correctamente la estrategia, passport contendrá el usuario ya parseado a partir de un campo "jwt_payload". 
+    */
+    //Estrategia con jwt
+    passport.use('jwt', new JWTStrategy({
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+        secretOrKey: 'S3cr3tK3y', //Debe ser el mismo que en app.js
+    }, async (jwt_payload, done) => {
+        try {
+            return done(null, jwt_payload);
+        } catch (err) {
+            return done(err);
         }
     }))
 }

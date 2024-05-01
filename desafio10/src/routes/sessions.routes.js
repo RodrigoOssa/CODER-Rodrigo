@@ -1,6 +1,6 @@
 import express from "express";
 import { userModel } from "../dao/models/user.model.js";
-import { createHash, generateToken, isValidPassword } from "../utils/utils.js";
+import { createHash, generateToken, isValidPassword, authToken, passportCall } from "../utils/utils.js";
 import passport from "passport";
 
 const sessions = express.Router();
@@ -202,5 +202,20 @@ sessions.get('/githubcallback', passport.authenticate('github', { failureRedirec
     req.session.rol = req.user.rol;
     res.redirect('/');
 })
+
+/**
+ *  Endpoint para obtener el usuario a partir de jwt. (Se coloca session:false en caso de quen o se ocupe express-session).
+ *  El call custom que creamos se manda a llamar de manera interna, se puede utilizar como un middleware mas.
+ */
+sessions.get('/current1', passport.authenticate('jwt',/* {session:false}. */(req, res) => {
+    res.send(req.user)
+}))
+
+/** 
+ * Por lo que al momento de mandar a llamar el endpoint donde queremos que se utilice, solo se manda a llamar con el nombre de la estrategia de interés.
+ */
+sessions.get('/current2', passportCall('jwt', (req, res) => {
+    res.send(req.user)
+}))
 
 export default sessions;

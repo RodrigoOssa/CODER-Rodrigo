@@ -5,25 +5,10 @@ import { socketServer } from "../app.js";
 import productRoutes from "./products.routes.js";
 import { userModel } from "../dao/models/user.model.js";
 import passport from "passport";
+import { authToken } from "../utils/utils.js";
 const viewsRoute = Router();
 
-const auth = async (req, res, next) => {
-    if (req.session.user_name === "adminCoder" && req.session.password === "adminCod3r123") {
-        return next();
-    }
-    try {
-        const dataUser = await userModel.findOne({ user_name: req.session.user_name });
-        if (dataUser && dataUser.user_name === req.session.user_name && dataUser.password === req.session.password) {
-            return next();
-        } else {
-            res.status(401).redirect('/login');
-        }
-    } catch (err) {
-        return res.status(400).send({ status: "Error", msg: "Error al consultar la base de datos" })
-    }
-}
-
-viewsRoute.get('/', auth, (req, res) => { //Volver a poner el auth, lo saco porque si no con github no entra
+viewsRoute.get('/', authToken, (req, res) => {
     const userData = {
         first_name: req.session.first_name,
         last_name: req.session.last_name,
@@ -35,7 +20,7 @@ viewsRoute.get('/', auth, (req, res) => { //Volver a poner el auth, lo saco porq
     res.render('layouts/main', { userData })
 })
 
-viewsRoute.get('/home', auth, async (req, res) => {//Volver a poner el auth, lo saco porque si no con github no entra
+viewsRoute.get('/home', authToken, async (req, res) => {
     let isAdmin = false;
     if (req.session.rol === "admin") isAdmin = true;
     console.log(isAdmin)

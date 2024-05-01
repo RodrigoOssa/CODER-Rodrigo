@@ -1,4 +1,7 @@
 import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken';
+import passport from "passport";
+
 /**
  *  hashsync toma el password que se le pasa y procede a aplicar un proceso de hasheo a partir de un "salt".
  *  genSaltSync generará un Salt de 10 caracteres. Un Salt es un string random que ahce que el proceso de hasheo se realice de manera impredecible.
@@ -16,7 +19,9 @@ export const isValidPassword = (user, password) => {
     return bcrypt.compareSync(password, user.password);
 };
 
-import jwt from 'jsonwebtoken';
+/**
+ * JWT
+*/
 
 //Una key privada sirve para utilizarse al momento de hacer el cifrado del token
 
@@ -34,6 +39,10 @@ export const generateToken = (user) => {
 export const authToken = (req, res, next) => {
     //El token viene desde los headers de autorización.
     const authHeader = req.headers.authorization;
+    console.log("leyendo la cookie")
+    //En este caso en particular voy a tomar el token desde una cookie
+    const authCookie = req.Cookies;
+    console.log({ authCookie })
     if (!authHeader) {
         //Si no hay header es porque no hay token y por lo tanto no está autenticado.
         return res.status(401).send({ error: "Not Authenticated" })
@@ -47,4 +56,21 @@ export const authToken = (req, res, next) => {
         req.user = credentials.user;
         next();
     })
+}
+
+/**
+ * Función que usa la función authenticate de passport.
+ * Se configura la función raiz para poder controlar los errores, el usuario y los mensajes.
+*/
+export const passportCall = (strategy) => {
+    return async (req, res, next) => {
+        passport.authenticate(strategy, function (err, user, info) {
+            if (err) return next(err);
+            if (!user) {
+                return res.status(401).send({ error: info.messages ? info.messages : info.toString() });
+            }
+            req.user = user;
+            next();
+        })(req, res, next)
+    }
 }
