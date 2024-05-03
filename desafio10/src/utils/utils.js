@@ -25,7 +25,7 @@ export const isValidPassword = (user, password) => {
 
 //Una key privada sirve para utilizarse al momento de hacer el cifrado del token
 
-const PRIVATE_KEY = "213i43b5gviudsfi";
+const PRIVATE_KEY = "S3cr3tK3y";
 /**
  * generateToken: al utilizar jwt.sign:
  * El primer arg es un obj con la información

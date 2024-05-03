@@ -6,9 +6,10 @@ import productRoutes from "./products.routes.js";
 import { userModel } from "../dao/models/user.model.js";
 import passport from "passport";
 import { authToken } from "../utils/utils.js";
+import { ExtractJwt } from "passport-jwt";
 const viewsRoute = Router();
 
-viewsRoute.get('/', authToken, (req, res) => {
+/* viewsRoute.get('/', authToken, (req, res) => {
     const userData = {
         first_name: req.session.first_name,
         last_name: req.session.last_name,
@@ -18,9 +19,21 @@ viewsRoute.get('/', authToken, (req, res) => {
         rol: req.session.rol
     }
     res.render('layouts/main', { userData })
+}) */
+
+viewsRoute.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const userData = {
+        first_name: req.user.user.first_name,
+        last_name: req.user.user.last_name,
+        user_name: req.user.user.user_name,
+        email: req.user.user.email,
+        age: req.user.user.age,
+        rol: req.user.user.rol
+    }
+    res.render('layouts/main', { userData })
 })
 
-viewsRoute.get('/home', authToken, async (req, res) => {
+viewsRoute.get('/home', passport.authenticate('jwt', { session: false }), async (req, res) => {
     let isAdmin = false;
     if (req.session.rol === "admin") isAdmin = true;
     console.log(isAdmin)

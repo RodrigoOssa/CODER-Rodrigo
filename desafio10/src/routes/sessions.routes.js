@@ -49,7 +49,7 @@ sessions.post('/logout', (req, res) => {
  *  indicar que se trata de un usuario administrador.
  */
 
-sessions.post('/login', passport.authenticate(
+/* sessions.post('/login', passport.authenticate(
     'login',
     { failureRedirect: '/login' }),
     async (req, res) => {
@@ -66,7 +66,60 @@ sessions.post('/login', passport.authenticate(
         req.session.password = req.user.password;
         req.session.rol = req.user.rol;
         res.redirect('/');
-    })
+    }) */
+
+sessions.post('/login', async (req, res) => {
+    const { user_name, password } = req.body;
+    let user_token;
+    if (!user_name || !password) {
+        return res.status(400).send({ status: "ERROR", error: "Uno o mas campos incompletos" })
+    }
+    //Logueo del super secreto admin
+    if (user_name === "adminCoder" && password === "adminCod3r123") {
+        console.log("Credenciales correctas de admin")
+        user_token = generateToken({
+            first_name: "Coder",
+            last_name: "House",
+            user_name: "adminCoder",
+            email: "adminCoder@coder.com",
+            age: "30",
+            password: "adminCod3r123",
+            rol: "admin"
+        })
+        console.log(user_token);
+        return res.status(200).cookie(
+            'tokenCookie',
+            user_token, {
+            maxAge: 60 * 60 * 1000,
+            httpOnly: true
+        }).redirect('/');
+    }
+    try {
+        const dataUser = await userModel.findOne({ user_name: user_name });
+        if (dataUser && dataUser.user_name === user_name) {
+            if (!isValidPassword(dataUser, password)) return res.send("Password incorrecta")
+            user_token = generateToken({
+                first_name: dataUser.first_name,
+                last_name: dataUser.last_name,
+                user_name: dataUser.user_name,
+                email: dataUser.email,
+                age: dataUser.age,
+                rol: dataUser.rol
+            })
+            console.log(user_token);
+            return res.status(200).cookie(
+                'tokenCookie',
+                user_token, {
+                maxAge: 60 * 60 * 1000,
+                httpOnly: true
+            }).redirect('/');
+        } else {
+            return res.status(400).redirect('/accountDoestExist')
+        }
+    } catch (err) {
+        return res.status(400).send({ status: "Error", msg: "Error al consultar la base de datos" })
+    }
+})
 /* sessions.post('/login', async (req, res) => {
     const { user_name, password } = req.body;
     if (!user_name || !password) {
