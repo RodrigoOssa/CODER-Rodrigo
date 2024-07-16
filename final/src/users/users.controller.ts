@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, Res, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UsersService } from './users.service';
-import { User } from './users.interface';
+import { User } from './dto/user.dto';
+import { UpdateUser } from './dto/update-user.dto';
 
 @Controller('/api/users')
 export class UsersController {
@@ -25,8 +26,13 @@ export class UsersController {
     }
 
     @Post()
-    createUser(@Body() user) {
+    createUser(@Body() user: User) {
         return this.UsersService.createUser(user)
+    }
+
+    @Put()
+    updateUser(@Body() update_user: UpdateUser) {
+        return this.UsersService.updateUser(update_user)
     }
 
     /* @Put('/test')
