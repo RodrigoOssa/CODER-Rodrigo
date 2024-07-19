@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { UsersService } from './users.service';
 import { User } from './dto/user.dto';
 import { UpdateUser } from './dto/update-user.dto';
-import { DeleteUser } from './dto/delete-user.dto';
 
 @Controller('/api/users')
 export class UsersController {
@@ -32,7 +31,7 @@ export class UsersController {
     }
 
     @Delete('/:id')
-    deleteUser(@Param('id') id: DeleteUser) {
+    deleteUser(@Param('id') id: String) {
         return this.UsersService.deleteUser(id)
     }
 
