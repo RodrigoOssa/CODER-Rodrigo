@@ -2,6 +2,10 @@ import { IsEmail, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, Max, Min
 
 export class UpdateUser {
 
+    @IsNotEmpty()
+    @IsString()
+    id: string
+
     @IsString()
     @IsOptional()
     first_name?: String

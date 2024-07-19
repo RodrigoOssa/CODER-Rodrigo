@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './dto/user.dto';
 import { UpdateUser } from './dto/update-user.dto';
+import { DeleteUser } from './dto/delete-user.dto';
 @Injectable()
 export class UsersService {
 
@@ -18,23 +19,8 @@ export class UsersService {
         return update_user
     }
 
-    getTest(): string {
-        return "Esto es un mensaje de pruebas"
-    }
-
-    createTest(): string {
-        return "Esto es un ejemplo de crear"
-    }
-
-    updateTest(): string {
-        return "Esto es un ejemplo de actualizar"
-    }
-
-    deleteTest(): string {
-        return "Esto es un ejemplo de eliminar"
-    }
-
-    updateStatusTest(): string {
-        return "Esto es un ejemplo de actualizar una parte"
+    deleteUser(id: DeleteUser) {
+        console.log(id)
+        return id
     }
 }

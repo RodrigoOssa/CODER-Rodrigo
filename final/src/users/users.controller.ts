@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { UsersService } from './users.service';
 import { User } from './dto/user.dto';
 import { UpdateUser } from './dto/update-user.dto';
+import { DeleteUser } from './dto/delete-user.dto';
 
 @Controller('/api/users')
 export class UsersController {
@@ -30,55 +31,18 @@ export class UsersController {
         return this.UsersService.createUser(user)
     }
 
+    @Delete('/:id')
+    deleteUser(@Param('id') id: DeleteUser) {
+        return this.UsersService.deleteUser(id)
+    }
+
     @Put()
     updateUser(@Body() update_user: UpdateUser) {
         return this.UsersService.updateUser(update_user)
     }
 
-    /* @Put('/test')
-    putTest() {
-        return this.UsersService.updateTest()
+    @Patch()
+    updateItemUser(@Body() updateItemUser: UpdateUser) {
+        return this.UsersService.updateUser(updateItemUser)
     }
-
-
-    @Delete('/test')
-    deleteTest() {
-        return this.UsersService.deleteTest()
-    }
-
-    @Patch('/test')
-    patchTest() {
-        return this.UsersService.updateStatusTest()
-    }
- */
-    @Get('/test')
-    getTest(@Req() request: Request, @Res() response: Response) {
-        return response.status(200).send(this.UsersService.getTest())
-    }
-
-    @Get('/test/:id')
-    getParam(@Req() request: Request, @Res() response: Response) {
-        return response.status(200).send(request.params)
-    }
-
-    @Put('/test')
-    putTest() {
-        return this.UsersService.updateTest()
-    }
-
-    @Post('/test')
-    postTest() {
-        return this.UsersService.createTest()
-    }
-
-    @Delete('/test')
-    deleteTest() {
-        return this.UsersService.deleteTest()
-    }
-
-    @Patch('/test')
-    patchTest() {
-        return this.UsersService.updateStatusTest()
-    }
-
 }
