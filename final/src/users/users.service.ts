@@ -1,16 +1,27 @@
-import { Injectable } from '@nestjs/common';
-import { User } from './dto/user.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { User } from './interfaces/user.interface';
+import { CreateUserDto } from './dto/CreateUser.dto';
 import { UpdateUser } from './dto/update-user.dto';
+import { Model } from 'mongoose';
+
 @Injectable()
 export class UsersService {
+
+    constructor(
+        @Inject('USER_MODEL')
+        private userModel: Model<User>
+    ) { }
 
     getUsers() {
         return "Retorna todos los usuarios"
     }
 
-    createUser(user: User) {
-        console.log(user)
-        return user
+    async create(user: CreateUserDto): Promise<User> {
+        const createUser = new this.userModel(user)
+        console.log(createUser)
+        if (createUser) {
+            return createUser.save()
+        }
     }
 
     updateUser(update_user: UpdateUser) {
