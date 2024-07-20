@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, Res, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UsersService } from './users.service';
-import { User } from './dto/user.dto';
+import { CreateUserDto } from './dto/CreateUser.dto';
 import { UpdateUser } from './dto/update-user.dto';
 
 @Controller('/api/users')
@@ -26,8 +26,8 @@ export class UsersController {
     }
 
     @Post()
-    createUser(@Body() user: User) {
-        return this.UsersService.createUser(user)
+    createUser(@Body() user: CreateUserDto) {
+        return this.UsersService.create(user)
     }
 
     @Delete('/:id')
