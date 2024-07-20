@@ -16,7 +16,7 @@ export class UsersController {
 
     @Get()
     getUsers(@Query() query: any) {
-        console.log(query)
+        console.log(query, "Get con query")
         return this.UsersService.getUsers()
     }
 

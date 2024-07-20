@@ -5,7 +5,7 @@ import { UpdateUser } from './dto/update-user.dto';
 export class UsersService {
 
     getUsers() {
-        return "Todos los usuarios"
+        return "Retorna todos los usuarios"
     }
 
     createUser(user: User) {
