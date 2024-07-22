@@ -30,34 +30,49 @@ export class ProductsService {
 
   async findOne(id: String): Promise<ProductInterface> {
     try {
-      return await this.productModel.findById(id);
+      const findProduct = await this.productModel.findById(id);
+      if (findProduct) {
+        return findProduct
+      } else {
+        throw new NotFoundException(`Product with ID ${id} not found`);
+      }
     } catch {
-      throw new NotFoundException(`User with ID ${id} not found`)
+      throw new NotFoundException(`Product with ID ${id} not found`);
     }
   }
 
   async update(id: String, updateProductDto: UpdateProductDto): Promise<ProductInterface> {
     try {
-      return await this.productModel.findByIdAndUpdate(id, updateProductDto, { new: true })
+      const updateProduct = await this.productModel.findByIdAndUpdate(id, updateProductDto, { new: true });
+      if (updateProduct) {
+        return updateProduct
+      } else {
+        throw new NotFoundException(`Product with ID ${id} not found`)
+      }
     } catch (e) {
-      throw new NotFoundException(`User with ID ${id} not found`)
+      throw new NotFoundException(`Product with ID ${id} not found`)
     }
   }
 
   async partialUpdate(id: String, updateProductDto: UpdateProductDto): Promise<ProductInterface> {
     try {
-      return await this.productModel.findByIdAndUpdate(id, { $set: updateProductDto }, { new: true })
+      const updateProduct = await this.productModel.findByIdAndUpdate(id, { $set: updateProductDto }, { new: true })
+      if (updateProduct) {
+        return updateProduct
+      } else {
+        throw new NotFoundException(`Product with ID ${id} not found`)
+      }
     } catch (e) {
-      throw new NotFoundException(`User with ID ${id} not found`)
+      throw new NotFoundException(`Product with ID ${id} not found`)
     }
   }
 
   async remove(id: String): Promise<ProductInterface> {
-    const deleteUser = await this.productModel.findByIdAndDelete(id).exec()
-    if (deleteUser) {
-      return deleteUser
+    const deleteProduct = await this.productModel.findByIdAndDelete(id).exec()
+    if (deleteProduct) {
+      return deleteProduct
     } else {
-      throw new NotFoundException(`User with ID ${id} not found`)
+      throw new NotFoundException(`Product with ID ${id} not found`)
     }
   }
 }
