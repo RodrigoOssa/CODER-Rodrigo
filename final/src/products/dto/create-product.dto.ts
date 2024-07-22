@@ -31,6 +31,5 @@ export class CreateProductDto {
     category: String
 
     @IsString()
-    @IsNotEmpty()
-    thumbnails: String
+    thumbnails?: String
 }
