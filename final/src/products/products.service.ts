@@ -1,5 +1,5 @@
 import { CreateProductDto } from './dto/create-product.dto';
-import { Inject, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Product } from './schemas/product.schema';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -12,28 +12,52 @@ export class ProductsService {
     @Inject('PRODUCT_MODEL') private productModel: Model<Product>) { }
 
   async create(createProductDto: CreateProductDto): Promise<ProductInterface> {
+    const newProduct = new this.productModel(createProductDto);
     try {
-      const newProduct = new this.productModel(createProductDto)
-      console.log(createProductDto)
-      return newProduct.save();
+      return await newProduct.save()
     } catch (e) {
-
+      throw new ConflictException(e.errmsg)
     }
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAll(): Promise<ProductInterface[]> {
+    try {
+      return this.productModel.find()
+    } catch (e) {
+      throw new NotFoundException(e.errmsg)
+    }
   }
 
-  findOne(id: String) {
-    return `This action returns a #${id} product`;
+  async findOne(id: String): Promise<ProductInterface> {
+    try {
+      return await this.productModel.findById(id);
+    } catch {
+      throw new NotFoundException(`User with ID ${id} not found`)
+    }
   }
 
-  update(id: String, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: String, updateProductDto: UpdateProductDto): Promise<ProductInterface> {
+    try {
+      return await this.productModel.findByIdAndUpdate(id, updateProductDto, { new: true })
+    } catch (e) {
+      throw new NotFoundException(`User with ID ${id} not found`)
+    }
   }
 
-  remove(id: String) {
-    return `This action removes a #${id} product`;
+  async partialUpdate(id: String, updateProductDto: UpdateProductDto): Promise<ProductInterface> {
+    try {
+      return await this.productModel.findByIdAndUpdate(id, { $set: updateProductDto }, { new: true })
+    } catch (e) {
+      throw new NotFoundException(`User with ID ${id} not found`)
+    }
+  }
+
+  async remove(id: String): Promise<ProductInterface> {
+    const deleteUser = await this.productModel.findByIdAndDelete(id).exec()
+    if (deleteUser) {
+      return deleteUser
+    } else {
+      throw new NotFoundException(`User with ID ${id} not found`)
+    }
   }
 }

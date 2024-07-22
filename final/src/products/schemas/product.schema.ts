@@ -21,7 +21,7 @@ export class Product {
     @Prop({
         type: String,
         require: true,
-        unique: true
+        unique: true,
     })
     code: String
 
