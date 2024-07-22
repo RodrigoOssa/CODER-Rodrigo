@@ -1,47 +1,41 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, Res, UsePipes, ValidationPipe } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/CreateUser.dto';
-import { UpdateUser } from './dto/update-user.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Controller('/api/users')
 export class UsersController {
 
-    constructor(private UsersService: UsersService) { }
-
-    /* @Get()
-    getUsers(@Req() request: Request, @Res() response: Response) {
-        return response.status(200).send("Devuelve los usuarios")
-    } */
-
-    @Get()
-    getUsers(@Query() query: any) {
-        console.log(query, "Get con query")
-        return this.UsersService.getUsers()
-    }
-
-    @Get('/:id')
-    getUserById(@Param('id') id: String) {
-        console.log(id)
-    }
+    constructor(private usersService: UsersService) { }
 
     @Post()
-    createUser(@Body() user: CreateUserDto) {
-        return this.UsersService.create(user)
+    create(@Body() createProductDto: CreateUserDto) {
+        return this.usersService.create(createProductDto);
     }
 
-    @Delete('/:id')
-    deleteUser(@Param('id') id: String) {
-        return this.UsersService.deleteUser(id)
+    @Get()
+    findAll() {
+        return this.usersService.findAll();
     }
 
-    @Put()
-    updateUser(@Body() update_user: UpdateUser) {
-        return this.UsersService.updateUser(update_user)
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.usersService.findOne(id);
+
     }
 
-    @Patch()
-    updateItemUser(@Body() updateItemUser: UpdateUser) {
-        return this.UsersService.updateUser(updateItemUser)
+    @Put(':id')
+    Update(@Param('id') id: String, @Body() updateUserDto: UpdateUserDto) {
+        return this.usersService.update(id, updateUserDto);
+    }
+
+    @Patch(':id')
+    partialUpdate(@Param('id') id: String, @Body() updateUserDto: Partial<UpdateUserDto>) {
+        return this.usersService.partialUpdate(id, updateUserDto);
+    }
+
+    @Delete(':id')
+    async remove(@Param('id') id: String) {
+        return await this.usersService.remove(id);
     }
 }

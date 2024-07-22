@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-export class User extends Document {
+export class UserInterface extends Document {
 
     first_name: String
 
