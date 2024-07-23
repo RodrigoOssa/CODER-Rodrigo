@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CartsService } from './carts.service';
-import { CreateCartDto } from './dto/create-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import { CreateCartDto } from './dto/createCart.dto';
+import { UpdateCartDto } from './dto/updateCart.dto';
 
 @Controller('/api/carts')
 export class CartsController {

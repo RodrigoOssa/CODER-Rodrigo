@@ -1,4 +1,4 @@
-export class ProductObject {
+export class ProductsCart {
 
     product: Object
     qty: Number
