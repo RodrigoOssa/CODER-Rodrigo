@@ -5,7 +5,7 @@ import { Product } from 'src/products/schemas/product.schema';
 export type CartDocument = mongoose.HydratedDocument<Cart>;
 
 @Schema()
-class Products {
+export class Products {
 
     @Prop({
         type: Number,
@@ -15,8 +15,9 @@ class Products {
     qty: number
 
     @Prop({
-        type: Product,
-        require: false,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        require: false
     })
     product: Product
 
@@ -27,8 +28,9 @@ export class Cart {
 
     @Prop({
         type: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product'
+            type: Products,
+            required: false,
+            default: []
         }]
     })
     products: Products[];

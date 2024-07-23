@@ -1,9 +1,11 @@
-import { IsArray, IsNotEmpty, IsString } from "class-validator";
-import { ProductsCart } from "./productsCart.dto";
+import { IsArray, IsOptional } from "class-validator";
 
 export class CreateCartDto {
 
     @IsArray()
-    products: Array<ProductsCart>
-
+    @IsOptional()
+    products?: Array<{
+        product: String,
+        qty: number
+    }>
 }
