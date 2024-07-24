@@ -54,6 +54,8 @@ export class Product {
         require: false
     })
     thumbnails: String
+
+    _id: any
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

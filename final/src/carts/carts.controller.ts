@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { CartsService } from './carts.service';
-import { CreateCartDto } from './dto/create-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import { CreateCartDto } from './dto/createCart.dto';
+import { UpdateCartDto } from './dto/updateCart.dto';
 
 @Controller('/api/carts')
 export class CartsController {
@@ -12,23 +12,44 @@ export class CartsController {
     return this.cartsService.create(createCartDto);
   }
 
+  @Post(':cid/product/:pid')
+  addProduct(
+    @Param('cid') cid: string,
+    @Param('pid') pid: string
+  ) {
+    console.log(cid, pid)
+    return this.cartsService.addProduct(cid, pid);
+  }
+
   @Get()
   findAll() {
     return this.cartsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cartsService.findOne(id);
+  @Get(':cid')
+  findOne(@Param('cid') cid: string) {
+    return this.cartsService.findOne(cid);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCartDto: UpdateCartDto) {
-    return this.cartsService.update(id, updateCartDto);
+  @Patch(':cid/product/:pid')
+  partialUpdate(
+    @Param('cid') cid: string,
+    @Param('pid') pid: string,
+    @Body() qty: UpdateCartDto
+  ) {
+    return this.cartsService.partialUpdate(cid, pid, qty);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cartsService.remove(id);
+  @Put(':cid')
+  update(
+    @Param('cid') cid: string,
+    @Body() updateCartDto: UpdateCartDto
+  ) {
+    return this.cartsService.update(cid, updateCartDto);
+  }
+
+  @Delete(':cid')
+  remove(@Param('cid') cid: string) {
+    return this.cartsService.remove(cid);
   }
 }
