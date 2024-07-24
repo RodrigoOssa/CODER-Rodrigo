@@ -1,9 +1,10 @@
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Cart } from './schemas/cart.schema';
 import { CreateCartDto } from './dto/createCart.dto';
 import { UpdateCartDto } from './dto/updateCart.dto';
 import { Product } from 'src/products/schemas/product.schema';
+import { Type } from 'class-transformer';
 
 @Injectable()
 export class CartsService {
@@ -75,19 +76,6 @@ export class CartsService {
     }
   }
 
-  async update(id: String, updateCartDto: UpdateCartDto): Promise<Cart> {
-    try {
-      const updateCart = await this.cartModel.findByIdAndUpdate(id, updateCartDto, { new: true });
-      if (updateCart) {
-        return updateCart
-      } else {
-        throw new NotFoundException(`Cart with ID ${id} not found`)
-      }
-    } catch (e) {
-      throw new NotFoundException(`Cart with ID ${id} not found`)
-    }
-  }
-
   async partialUpdate(cid: String, pid: String, qty: UpdateCartDto): Promise<Cart> {
     try {
       const updateCart = await this.cartModel.findById(cid);
@@ -105,12 +93,35 @@ export class CartsService {
     }
   }
 
-  async remove(id: String): Promise<Cart> {
-    const deleteCart = await this.cartModel.findByIdAndDelete(id).exec()
+  async update(cid: String, updateCartDto: UpdateCartDto)/* : Promise<Cart> */ {
+    const listProductID: Array<any> = updateCartDto.products.map(element => new Types.ObjectId(element.product));
+    try {
+      const someProducts = await this.productModel.find({ _id: { $in: listProductID } });
+      const newProducts: Cart = { products: [] }
+      updateCartDto.products.forEach(item => {
+        const toCompare = new Types.ObjectId(item.product);
+        const existProduct = someProducts.find(items => toCompare.equals(items._id));
+        if (existProduct) {
+          newProducts.products.push({ qty: item.qty, product: existProduct })
+        }
+      })
+      const updateCart = await this.cartModel.findByIdAndUpdate(cid, newProducts, { new: true });
+      if (updateCart) {
+        return updateCart
+      } else {
+        throw new NotFoundException(`Cart with ID ${cid} not found`)
+      }
+    } catch (e) {
+      throw new NotFoundException(`Cart with ID ${cid} not found`)
+    }
+  }
+
+  async remove(cid: String): Promise<Cart> {
+    const deleteCart = await this.cartModel.findByIdAndDelete(cid).exec()
     if (deleteCart) {
       return deleteCart
     } else {
-      throw new NotFoundException(`Cart with ID ${id} not found`)
+      throw new NotFoundException(`Cart with ID ${cid} not found`)
     }
   }
 }

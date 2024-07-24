@@ -5,7 +5,7 @@ export class CreateCartDto {
     @IsArray()
     @IsOptional()
     products?: Array<{
-        product: String,
+        product: string,
         qty: number
     }>
 }

@@ -40,16 +40,16 @@ export class CartsController {
     return this.cartsService.partialUpdate(cid, pid, qty);
   }
 
-  @Put(':id')
+  @Put(':cid')
   update(
-    @Param('id') id: string,
+    @Param('cid') cid: string,
     @Body() updateCartDto: UpdateCartDto
   ) {
-    return this.cartsService.update(id, updateCartDto);
+    return this.cartsService.update(cid, updateCartDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cartsService.remove(id);
+  @Delete(':cid')
+  remove(@Param('cid') cid: string) {
+    return this.cartsService.remove(cid);
   }
 }
