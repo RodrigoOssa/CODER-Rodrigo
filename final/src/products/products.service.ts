@@ -75,4 +75,18 @@ export class ProductsService {
       throw new NotFoundException(`Product with ID ${id} not found`)
     }
   }
+
+  async uploadImage(pid: string, thumbnailsUpdate: UpdateProductDto): Promise<ProductInterface> {
+    try {
+      const updateImg = await this.productModel.findByIdAndUpdate(pid, { $set: thumbnailsUpdate }, { new: true })
+      console.log("Estado de la carga", updateImg)
+      if (updateImg) {
+        return updateImg
+      } else {
+        throw new NotFoundException(`Product with ID ${pid} not found`)
+      }
+    } catch (e) {
+      throw new NotFoundException(`Product with ID ${pid} not found`)
+    }
+  }
 }

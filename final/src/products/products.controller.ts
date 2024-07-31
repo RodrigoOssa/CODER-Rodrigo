@@ -9,13 +9,15 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
 
-  @Post('/img')
+  @Post('/img/:pid')
   @UseInterceptors(FileInterceptor('thumbnails'))
   uploadImage(
-    @UploadedFile() img: Express.Multer.File
+    @UploadedFile() img: Express.Multer.File,
+    @Param('pid') pid: string
   ) {
-    console.log(img)
-    return img
+    const imagePath = `/products/img/${img?.filename}`
+    const updateThumbnails: UpdateProductDto = { thumbnails: imagePath }
+    return this.productsService.uploadImage(pid, updateThumbnails)
   }
 
   @Post()
@@ -35,12 +37,18 @@ export class ProductsController {
   }
 
   @Put(':id')
-  Update(@Param('id') id: String, @Body() updateProductDto: UpdateProductDto) {
+  Update(
+    @Param('id') id: String,
+    @Body() updateProductDto: UpdateProductDto
+  ) {
     return this.productsService.update(id, updateProductDto);
   }
 
   @Patch(':id')
-  partialUpdate(@Param('id') id: String, @Body() updateProductDto: Partial<UpdateProductDto>) {
+  partialUpdate(
+    @Param('id') id: String,
+    @Body() updateProductDto: Partial<UpdateProductDto>
+  ) {
     return this.productsService.partialUpdate(id, updateProductDto);
   }
 
