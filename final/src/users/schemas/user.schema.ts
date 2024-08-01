@@ -9,13 +9,13 @@ export class User {
         type: String,
         require: true
     })
-    first_name: String
+    first_name: string
 
     @Prop({
         type: String,
         require: true
     })
-    last_name: String
+    last_name: string
 
     @Prop({
         type: Number,
@@ -28,19 +28,19 @@ export class User {
         require: true,
         unique: true
     })
-    email: String
+    email: string
 
     @Prop({
         type: String,
         require: true
     })
-    role: String
+    role: string
 
     @Prop({
         type: String,
         require: true
     })
-    password: String
+    password: string
 
     @Prop({
         type: Object
