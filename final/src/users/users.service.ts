@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/CreateUser.dto';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { comapreHash, createHashPass } from 'src/utils/utils';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +15,7 @@ export class UsersService {
     ) { }
 
     async create(createUserDto: CreateUserDto): Promise<UserInterface> {
+        createUserDto.password = await createHashPass(createUserDto.password);
         const newProduct = new this.userModel(createUserDto);
         try {
             return await newProduct.save()
