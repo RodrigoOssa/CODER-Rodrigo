@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/CreateUser.dto';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import { comapreHash, createHashPass } from 'src/utils/utils';
+import { createHashPass } from 'src/utils/utils';
 
 @Injectable()
 export class UsersService {
