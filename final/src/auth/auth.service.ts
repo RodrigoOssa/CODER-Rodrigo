@@ -11,10 +11,11 @@ export class AuthService {
     async singIn(userEmail: string, password: string) {
         const user = await this.userModel.findOne({ email: userEmail });
         if (user?.password === password) {
-            const { password, ...result } = user;
             //Acá hay que generar y mandar el token
-            return result
+            console.log(user)
+            return user
         } else {
+            console.log(user)
             throw new UnauthorizedException();
         }
     }
