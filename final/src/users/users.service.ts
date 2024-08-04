@@ -1,9 +1,10 @@
-import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserInterface } from './interfaces/user.interface';
 import { CreateUserDto } from './dto/CreateUser.dto';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { createHashPass } from 'src/utils/utils';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +15,7 @@ export class UsersService {
     ) { }
 
     async create(createUserDto: CreateUserDto): Promise<UserInterface> {
+        createUserDto.password = await createHashPass(createUserDto.password);
         const newProduct = new this.userModel(createUserDto);
         try {
             return await newProduct.save()
@@ -40,6 +42,25 @@ export class UsersService {
             }
         } catch {
             throw new NotFoundException(`User with ID ${id} not found`)
+        }
+    }
+
+    async findByLogin(userEmail: string): Promise<any> {
+        try {
+            const user = await this.userModel.findOne({ email: userEmail });
+            if (!user) {
+                return {
+                    status: "Error",
+                    msg: "User not exist",
+                    payload: null
+                }
+            }
+            return {
+                status: "Ok",
+                payload: user
+            }
+        } catch {
+            throw new NotFoundException(`User not found`)
         }
     }
 
