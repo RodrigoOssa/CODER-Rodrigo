@@ -3,14 +3,18 @@ import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { Role } from '../interfaces/role.enum';
 import { Observable } from 'rxjs';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-    constructor(private reflector: Reflector) { }
+    constructor(
+        private jwtService: JwtService,
+        private reflector: Reflector,
+    ) { }
 
     canActivate(
         context: ExecutionContext,
-    ): boolean | Promise<boolean> | Observable<boolean> {
+    ): boolean {
         const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
             context.getHandler(),
             context.getClass(),
@@ -18,11 +22,11 @@ export class RolesGuard implements CanActivate {
         if (!requiredRoles) {
             return true;
         }
-        const { body } = context.switchToHttp().getRequest();
+
+        let { user } = context.switchToHttp().getRequest();
+        if (user.role) user.role = user.role.toUpperCase();
         return requiredRoles.some((role) => {
-            console.log(body)
-            console.log("HOLA")
-            return body.roles?.includes(role)
+            return user.role?.includes(role)
         });
     }
 }

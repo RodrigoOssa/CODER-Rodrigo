@@ -5,12 +5,16 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/interfaces/role.enum';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('/api/products')
+@UseGuards(AuthGuard, RolesGuard)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
 
-  @UseGuards(JwtAuthGuard)
   @Post('/img/:pid')
   @UseInterceptors(FileInterceptor('thumbnails'))
   uploadImage(
@@ -22,26 +26,23 @@ export class ProductsController {
     return this.productsService.uploadImage(pid, updateThumbnails)
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
+  @Roles(Role.USER)
   findAll() {
     return this.productsService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(id);
 
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put(':id')
   Update(
     @Param('id') id: String,
@@ -50,7 +51,6 @@ export class ProductsController {
     return this.productsService.update(id, updateProductDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   partialUpdate(
     @Param('id') id: String,
@@ -59,7 +59,6 @@ export class ProductsController {
     return this.productsService.partialUpdate(id, updateProductDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: String) {
     return await this.productsService.remove(id);

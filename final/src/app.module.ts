@@ -27,10 +27,10 @@ import { RolesGuard } from './common/guards/roles.guard';
   controllers: [AppController],
   providers: [
     AppService,
-    {
+    /* {
       provide: APP_GUARD,
       useClass: RolesGuard,
-    }
+    } */
   ],
 })
 export class AppModule { }
