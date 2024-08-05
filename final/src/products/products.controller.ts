@@ -4,14 +4,14 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { Role } from 'src/common/interfaces/role.enum';
-import { RolesGuard } from 'src/common/guards/roles.guard';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/interfaces/role.enum';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @Controller('/api/products')
 @UseGuards(AuthGuard, RolesGuard)
+@Roles()
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
 
@@ -32,7 +32,6 @@ export class ProductsController {
   }
 
   @Get()
-  @Roles(Role.USER)
   findAll() {
     return this.productsService.findAll();
   }
