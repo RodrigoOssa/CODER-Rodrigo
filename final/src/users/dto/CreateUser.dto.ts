@@ -4,11 +4,11 @@ export class CreateUserDto {
 
     @IsString()
     @IsNotEmpty()
-    first_name: String
+    first_name: string
 
     @IsString()
     @IsNotEmpty()
-    last_name: String
+    last_name: string
 
     @IsNumber()
     @IsNotEmpty()
@@ -19,15 +19,15 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     @IsEmail()
-    email: String
+    email: string
 
     @IsString()
     @IsNotEmpty()
-    role: String
+    role: string
 
     @IsString()
     @IsNotEmpty()
-    password: String
+    password: string
 
     @IsObject()
     cart: Object

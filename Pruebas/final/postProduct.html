@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear producto</title>
+    <style>
+        form {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Product Form</h1>
+    <form id="miform" action="localhost:3000/api/products" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" value="Calculadora" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" value="Super calculadora" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="code">Code:</label>
+            <input type="text" id="code" name="code" value="1a1a1a1p" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" step="0.01" value="12000" required>
+        </div>
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <select id="status" name="status" required>
+                <option value="true">Available</option>
+                <option value="false">Unavailable</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="stock">Stock:</label>
+            <input type="number" id="stock" name="stock" value="20" required>
+        </div>
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" value="Calculadoras" required>
+        </div>
+        <div class="form-group">
+            <label for="thumbnails">Thumbnails:</label>
+            <input type="file" id="thumbnails" name="thumbnails" accept="image/*" multiple>
+        </div>
+        <button id="submit" type="submit">Submit</button>
+    </form>
+    </form>
+    <script>
+        const sendImage = async (pid, img) => {
+            console.log("Imagen", { pid, img })
+            const imgForm = new FormData();
+            imgForm.append('thumbnails', img);
+            try {
+                const response = await fetch(`http://localhost:3000/api/products/img/${pid}`, {
+                    method: 'POST',
+                    body: imgForm
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Image submitted successfully!');
+                } else {
+                    console.log('Failed to submit Image.');
+                    console.log(response.json())
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        const fomatData = async (e) => {
+            e.preventDefault();
+
+            const form = e.target.form;
+            const img = form[7].files[0];
+            const data = {
+                title: form[0].value,
+                description: form[1].value,
+                code: form[2].value,
+                price: parseInt(form[3].value, 10),
+                status: form[4].value === "true" ? true : false,
+                stock: parseInt(form[5].value, 10),
+                category: form[6].value,
+                thumbnails: ""
+            };
+            console.log(data)
+            try {
+                const response = await fetch('http://localhost:3000/api/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Product submitted successfully!', result);
+                    if (img) {
+                        const resultImage = await sendImage(result._id, img);
+                    }
+                } else {
+                    console.log('Failed to submit product.');
+                    console.log(response)
+                }
+            } catch (e) {
+                console.log(e)
+            }
+        }
+        const sendForm = document.getElementById("submit").addEventListener("click", fomatData);
+    </script>
+</body>
+
+</html>
