@@ -27,7 +27,7 @@ export class CartsService {
     }
   }
 
-  async addProduct(cid: string, pid: string)/* : Promise<Cart> */ {
+  async addProduct(cid: string, pid: string): Promise<Cart> {
     const existCart = await this.cartModel.findById(cid)/* .populate("products.product") */;
     /* 
     Revisa si el producto existe en cart. De no existir corrobora que exista el producto en si y lo agrega al cart. De existir el producto en el cart suma 1 el qty

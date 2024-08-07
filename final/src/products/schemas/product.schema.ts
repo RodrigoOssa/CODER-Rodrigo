@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { User } from 'src/users/schemas/user.schema';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -48,6 +49,14 @@ export class Product {
         require: true
     })
     category: String
+
+
+    @Prop({
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        require: true
+    })
+    owner: User
 
     @Prop({
         type: String,
