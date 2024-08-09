@@ -47,19 +47,19 @@
     <form id="miform" action="localhost:3000/api/products" method="POST" enctype="multipart/form-data">
         <div class="form-group">
             <label for="title">Title:</label>
-            <input type="text" id="title" name="title" value="Calculadora" required>
+            <input type="text" id="title" name="title" required>
         </div>
         <div class="form-group">
             <label for="description">Description:</label>
-            <textarea id="description" name="description" rows="4" value="Super calculadora" required></textarea>
+            <textarea id="description" name="description" rows="4" required></textarea>
         </div>
         <div class="form-group">
             <label for="code">Code:</label>
-            <input type="text" id="code" name="code" value="1a1a1a1p" required>
+            <input type="text" id="code" name="code" required>
         </div>
         <div class="form-group">
             <label for="price">Price:</label>
-            <input type="number" id="price" name="price" step="0.01" value="12000" required>
+            <input type="number" id="price" name="price" step="0.01" required>
         </div>
         <div class="form-group">
             <label for="status">Status:</label>
@@ -70,11 +70,15 @@
         </div>
         <div class="form-group">
             <label for="stock">Stock:</label>
-            <input type="number" id="stock" name="stock" value="20" required>
+            <input type="number" id="stock" name="stock" required>
         </div>
         <div class="form-group">
             <label for="category">Category:</label>
-            <input type="text" id="category" name="category" value="Calculadoras" required>
+            <input type="text" id="category" name="category" required>
+        </div>
+        <div class="form-group">
+            <label for="owner">UserID:</label>
+            <input type="text" id="owner" name="owner" required>
         </div>
         <div class="form-group">
             <label for="thumbnails">Thumbnails:</label>

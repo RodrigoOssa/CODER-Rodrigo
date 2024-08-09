@@ -33,4 +33,9 @@ export class CreateUserDto {
     @IsArray()
     @IsOptional()
     cart: Cart[]
+
+    @IsOptional()
+    @IsArray()
+    id?: string
+
 }

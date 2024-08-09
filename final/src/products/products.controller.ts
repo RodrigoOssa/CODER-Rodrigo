@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseInterceptors, UploadedFile, UseGuards, Req } from '@nestjs/common';
 import { Express } from 'express';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -28,7 +28,12 @@ export class ProductsController {
 
   @Roles(Role.ADMIN, Role.PREMIUM)
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
+  create(
+    @Body() createProductDto: CreateProductDto,
+    @Req() req: any
+  ) {
+    const { user } = req;
+    createProductDto.owner = user.id
     return this.productsService.create(createProductDto);
   }
 
@@ -49,23 +54,35 @@ export class ProductsController {
   @Put(':id')
   Update(
     @Param('id') id: String,
-    @Body() updateProductDto: UpdateProductDto
+    @Body() updateProductDto: UpdateProductDto,
+    @Req() req: any
   ) {
-    return this.productsService.update(id, updateProductDto);
+    const { user } = req;
+    if (user.role === Role.ADMIN) return this.productsService.update(id, updateProductDto);
+    const { owner, ...rest } = updateProductDto;
+    return this.productsService.update(id, rest);
   }
 
   @Roles(Role.ADMIN, Role.PREMIUM)
   @Patch(':id')
   partialUpdate(
     @Param('id') id: String,
-    @Body() updateProductDto: Partial<UpdateProductDto>
+    @Body() updateProductDto: Partial<UpdateProductDto>,
+    @Req() req: any
   ) {
-    return this.productsService.partialUpdate(id, updateProductDto);
+    const { user } = req;
+    if (user.role === Role.ADMIN) return this.productsService.update(id, updateProductDto);
+    const { owner, ...rest } = updateProductDto;
+    return this.productsService.partialUpdate(id, rest);
   }
 
   @Roles(Role.ADMIN, Role.PREMIUM)
   @Delete(':id')
-  async remove(@Param('id') id: String) {
-    return await this.productsService.remove(id);
+  async remove(
+    @Param('id') id: String,
+    @Req() req: any
+  ) {
+    const { user } = req;
+    return this.productsService.remove(id, user)
   }
 }

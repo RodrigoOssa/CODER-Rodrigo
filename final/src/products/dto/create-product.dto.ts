@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from "class-validator"
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator"
 import { User } from "src/users/schemas/user.schema"
 
 export class CreateProductDto {
@@ -31,9 +31,13 @@ export class CreateProductDto {
     @IsNotEmpty()
     category: String
 
-    @IsNotEmpty()
-    owner: User
+    @IsOptional()
+    @IsString()
+    owner: string
 
     @IsString()
     thumbnails?: String
+
+    @IsOptional()
+    _id: any
 }
