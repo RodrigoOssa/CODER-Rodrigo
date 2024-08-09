@@ -26,6 +26,8 @@ export class Products {
 @Schema()
 export class Cart {
 
+    _id?: any
+
     @Prop({
         type: [{
             type: Products,

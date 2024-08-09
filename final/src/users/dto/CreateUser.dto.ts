@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsObject, IsString, Max, Min } from "class-validator"
+import { IsArray, IsEmail, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, Max, Min } from "class-validator"
+import { Cart } from "src/carts/schemas/cart.schema"
 
 export class CreateUserDto {
 
@@ -29,6 +30,7 @@ export class CreateUserDto {
     @IsNotEmpty()
     password: string
 
-    @IsObject()
-    cart: Object
+    @IsArray()
+    @IsOptional()
+    cart: Cart[]
 }

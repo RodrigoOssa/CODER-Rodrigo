@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument, ObjectId } from 'mongoose';
 import { Cart } from 'src/carts/schemas/cart.schema';
 
 export type ProductDocument = HydratedDocument<User>;
@@ -44,11 +44,12 @@ export class User {
     password: string
 
 
-    @Prop({
+    @Prop([{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Cart',
-        require: false
-    })
+        required: false,
+        default: []
+    }])
     cart: Cart[]
 }
 

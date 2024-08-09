@@ -12,10 +12,10 @@ export class CartsService {
     @Inject('CART_MODEL') private cartModel: Model<Cart>,
     @Inject('PRODUCT_MODEL') private productModel: Model<Product>) { }
 
-  async create(createCartDto: any): Promise<Cart> {
-    const newCart = new this.cartModel({ products: [] });
+  async create(createCartDto?: any): Promise<Cart> {
     try {
-      if (createCartDto.products?.length > 0) {
+      const newCart = new this.cartModel({ products: [] });
+      if (createCartDto?.products?.length > 0) {
         for (const item of createCartDto.products) {
           const existProduct = await this.productModel.findById(item.product);
           if (existProduct) newCart.products.push({ qty: item.qty, product: existProduct });

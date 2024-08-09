@@ -1,24 +1,27 @@
 import { ConflictException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserInterface } from './interfaces/user.interface';
 import { CreateUserDto } from './dto/CreateUser.dto';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User } from './schemas/user.schema';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { createHashPass } from 'src/utils/utils';
+import { CartsService } from 'src/carts/carts.service';
 
 @Injectable()
 export class UsersService {
 
     constructor(
-        @Inject('USER_MODEL')
-        private userModel: Model<User>
+        @Inject('USER_MODEL') private userModel: Model<User>,
+        private cartService: CartsService
     ) { }
 
     async create(createUserDto: CreateUserDto): Promise<UserInterface> {
         createUserDto.password = await createHashPass(createUserDto.password);
-        const newProduct = new this.userModel(createUserDto);
         try {
-            return await newProduct.save()
+            const newUser = await new this.userModel(createUserDto);
+            const newCart = await this.cartService.create();
+            newUser.cart.push(newCart)
+            return await newUser.save()
         } catch (e) {
             throw new ConflictException(e.errmsg)
         }

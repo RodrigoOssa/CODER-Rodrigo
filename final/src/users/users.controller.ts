@@ -8,7 +8,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @Controller('/api/users')
-@UseGuards(AuthGuard, RolesGuard)
+@UseGuards(RolesGuard)
 @Roles()
 export class UsersController {
 

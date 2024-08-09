@@ -11,10 +11,10 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @Controller('/api/products')
 @UseGuards(AuthGuard, RolesGuard)
-@Roles()
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
 
+  @Roles(Role.ADMIN, Role.PREMIUM)
   @Post('/img/:pid')
   @UseInterceptors(FileInterceptor('thumbnails'))
   uploadImage(
@@ -26,22 +26,26 @@ export class ProductsController {
     return this.productsService.uploadImage(pid, updateThumbnails)
   }
 
+  @Roles(Role.ADMIN, Role.PREMIUM)
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
 
+  @Roles()
   @Get()
   findAll() {
     return this.productsService.findAll();
   }
 
+  @Roles()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(id);
 
   }
 
+  @Roles(Role.ADMIN, Role.PREMIUM)
   @Put(':id')
   Update(
     @Param('id') id: String,
@@ -50,6 +54,7 @@ export class ProductsController {
     return this.productsService.update(id, updateProductDto);
   }
 
+  @Roles(Role.ADMIN, Role.PREMIUM)
   @Patch(':id')
   partialUpdate(
     @Param('id') id: String,
@@ -58,6 +63,7 @@ export class ProductsController {
     return this.productsService.partialUpdate(id, updateProductDto);
   }
 
+  @Roles(Role.ADMIN, Role.PREMIUM)
   @Delete(':id')
   async remove(@Param('id') id: String) {
     return await this.productsService.remove(id);
