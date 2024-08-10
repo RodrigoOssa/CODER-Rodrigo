@@ -1,4 +1,5 @@
 import { Document } from "mongoose";
+import { User } from "src/users/schemas/user.schema";
 
 export class ProductInterface extends Document {
 
@@ -17,4 +18,8 @@ export class ProductInterface extends Document {
     category: String
 
     thumbnails?: String
+
+    owner?: User
+
+    _id?: any
 }

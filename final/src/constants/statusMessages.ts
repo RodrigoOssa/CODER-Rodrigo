@@ -3,5 +3,7 @@ export enum ERROR_MSG {
 }
 
 export enum SUCCESS_MSG {
-    OK = 'OK'
+    OK = 'OK',
+    DELETED = "DELETED",
+    CREATED = "CREATED",
 }
